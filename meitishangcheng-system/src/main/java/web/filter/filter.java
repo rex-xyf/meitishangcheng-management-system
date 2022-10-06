@@ -26,6 +26,7 @@ public class filter implements Filter {
         }
         HttpSession session = request.getSession();
         if (session.getAttribute("manager")==null){
+            request.setAttribute("fell","您尚未登录");
             request.getRequestDispatcher("/login.jsp").forward(request,servletResponse);
         }
         if (session.getAttribute("manager")!=null){

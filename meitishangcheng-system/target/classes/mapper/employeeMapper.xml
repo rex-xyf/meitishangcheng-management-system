@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mapper.employeeMapper">
+    <resultMap id="text" type="employee">
+
+    </resultMap>
+    <select id="selectAll" resultMap="text">
+        select * from employee;
+    </select>
+
+    <insert id="add">
+        insert into employee values(null,#{name},#{address},#{hourWages},#{department},#{workShifts});
+    </insert>
+
+    <select id="selectById" resultMap="text">
+        select * from employee where id = #{id};
+    </select>
+
+    <update id="update">
+        update employee set name=#{name},address=#{address},hourWages=#{hourWages},department=#{department},workShifts=#{workShifts} where id = #{id}
+    </update>
+
+    <delete id="delete">
+        delete from employee where id = #{id}
+    </delete>
+</mapper>
