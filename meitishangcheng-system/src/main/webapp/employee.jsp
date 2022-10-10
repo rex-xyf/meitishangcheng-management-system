@@ -10,16 +10,21 @@
 <html>
 <head>
     <title>查询所有</title>
+    <link rel="stylesheet" href="css/styleForMain.css">
 </head>
 <body>
-    <h1>${manager.username},欢迎您</h1>
-    <input type="button" value="添加" onclick="add()">
+    <h1><center>Welcome to MeiTiShangCheng System</center></h1>
+    <span id="white"></span>
+    <button class="button" onclick="add()"><span>ADD </span></button>
+    <span id="user">
+        ${manager.username}|<a href="login.jsp">Log out</a>
+    </span>
     <hr>
 <table border="1" cellspacing="0" width="1000" align="center">
     <tr>
         <th>员工编号</th>
         <th>员工姓名</th>
-        <th>员工住址</th>
+        <th class="address">员工住址</th>
         <th>小时工资</th>
         <th>所属部门</th>
         <th>工作班次</th>

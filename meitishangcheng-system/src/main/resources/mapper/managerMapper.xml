@@ -17,7 +17,7 @@
     </select>
 
     <insert id="add">
-        insert into manager values(0,#{username},#{password},true,null)
+        insert into manager values(0,#{username},#{password},true,#{email})
     </insert>
 
 </mapper>

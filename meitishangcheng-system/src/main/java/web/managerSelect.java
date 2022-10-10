@@ -40,7 +40,7 @@ public class managerSelect extends HttpServlet {
 
         }
         else {
-            req.setAttribute("fell","用户名或密码错误");
+            req.setAttribute("fell","Username or password error");
             req.getRequestDispatcher("login.jsp").forward(req,resp);
         }
 

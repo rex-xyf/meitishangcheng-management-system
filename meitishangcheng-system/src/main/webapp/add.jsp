@@ -9,15 +9,23 @@
 <html>
 <head>
     <title>添加</title>
+    <link rel="stylesheet" href="css/styleForChange.css">
 </head>
 <body>
-    <form action="/meitishangcheng-system/employeeAdd" method="post">
-        请输入员工姓名：<input type="text" name="name"><br>
-        请输入员工住址：<input type="text" name="address"><br>
-        请输入小时工资：<input type="text" name="hourWages"><br>
-        请输入所属部门：<input type="text" name="department"><br>
-        请输入工作班次：<input type="text" name="workShifts"><br>
-        <input type="submit" value="提交">
-    </form>
+<div class="container">
+    <div class="login-wrapper">
+        <div class="header">ADD</div>
+        <div class="form-wrapper">
+            <form action="/meitishangcheng-system/employeeAdd" method="post">
+                <input type="text" name="name" placeholder="name" class="input-item">
+                <input type="text" name="address" placeholder="address" class="input-item">
+                <input type="text" name="hourWages" placeholder="hourWages" class="input-item">
+                <input type="text" name="department" placeholder="department" class="input-item">
+                <input type="text" name="workShifts" placeholder="workShifts" class="input-item">
+                <input type="submit" class="btn" value="Add">
+            </form>
+        </div>
+    </div>
+</div>
 </body>
 </html>

@@ -5,17 +5,17 @@ public class manager {
     private String username;
     private String password;
     private boolean permission;
-    private String name;
+    private String email;
 
     public manager() {
     }
 
-    public manager(int id, String username, String password, boolean permission, String name) {
+    public manager(int id, String username, String password, boolean permission, String email) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.permission = permission;
-        this.name = name;
+        this.email = email;
     }
 
     public int getId() {
@@ -50,12 +50,12 @@ public class manager {
         this.permission = permission;
     }
 
-    public String getName() {
-        return name;
+    public String getEmail() {
+        return email;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     @Override
@@ -65,7 +65,7 @@ public class manager {
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", permission=" + permission +
-                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
                 '}';
     }
 }
