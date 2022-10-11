@@ -45,7 +45,6 @@ public class MailUtil  {
             message.setContent(content, "text/html;charset=UTF-8");
             // 3.发送邮件
             Transport.send(message);
-            System.out.println("激活邮件成功发送!");
         } catch (Exception e) {
             e.printStackTrace();
         }

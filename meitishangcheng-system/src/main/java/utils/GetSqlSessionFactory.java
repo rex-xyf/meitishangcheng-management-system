@@ -6,7 +6,7 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
 import java.io.InputStream;
 
-public class getSqlSessionFactory {
+public class GetSqlSessionFactory {
     public static SqlSessionFactory sqlSessionFactory;
     static {
         try {

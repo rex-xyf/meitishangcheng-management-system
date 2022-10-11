@@ -13,16 +13,19 @@
     <link rel="stylesheet" href="css/styleForMain.css">
 </head>
 <body>
+    <form action="/meitishangcheng-system/employeeDeleteByIds" method="post">
     <h1><center>Welcome to MeiTiShangCheng System</center></h1>
     <span id="white"></span>
-    <button class="button" onclick="add()"><span>ADD </span></button>
+    <button class="button" type="button" onclick="add()"><span>ADD </span></button>
+    <button class="button" type="submit"><span>DeleteAll </span></button>
     <span id="user">
         ${manager.username}|<a href="login.jsp">Log out</a>
     </span>
     <hr>
 <table border="1" cellspacing="0" width="1000" align="center">
     <tr>
-        <th>id</th>
+        <th>check</th>
+        <th class="id">id</th>
         <th>name</th>
         <th class="address">address</th>
         <th>hour wages</th>
@@ -32,6 +35,7 @@
     </tr>
     <c:forEach items="${employee}" var="employee" varStatus="id">
         <tr>
+            <td><input type="checkbox" value="${employee.id}" name="select"></td>
             <td>${id.count}</td>
             <td>${employee.name}</td>
             <td>${employee.address}</td>
@@ -53,6 +57,7 @@
         </tr>
     </c:forEach>
 </table>
+    </form>
 </body>
 </html>
 

@@ -1,7 +1,7 @@
 package web;
 
-import pojo.employee;
-import service.employeeService;
+import pojo.Employee;
+import service.EmployeeService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,12 +11,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @WebServlet("/employeeSelectById")
-public class employeeSelectById extends HttpServlet {
-    employeeService employeeService = new employeeService();
+public class EmployeeSelectById extends HttpServlet {
+    EmployeeService employeeService = new EmployeeService();
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         int id = Integer.parseInt(req.getParameter("id"));
-        employee employee = employeeService.selectById(id);
+        Employee employee = employeeService.selectById(id);
         req.setAttribute("employee", employee);
         req.getRequestDispatcher("/update.jsp").forward(req,resp);
     }

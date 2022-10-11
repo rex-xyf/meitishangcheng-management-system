@@ -70,7 +70,7 @@ table {
 
 th {
     color: white;
-    width: 200px;
+    width: 180px;
     height: 65px;
     background-color: black;
     border: 0px;
@@ -80,6 +80,11 @@ th {
 .address {
     width: 300px;
 }
+
+.id{
+    width: 80px;
+}
+
 td {
     background-color: #f7f9fc;
     width: 170px;

@@ -2,7 +2,7 @@ package utils;
 
 import java.util.Random;
 
-public class createCode {
+public class CreateCode {
 
     public static String randomCode (int n) {
         //1、定义一个字符串变量记录生成的随机字符

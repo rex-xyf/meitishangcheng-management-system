@@ -1,6 +1,6 @@
 package pojo;
 
-public class employee {
+public class Employee {
     private int id;
     private String name;
     private String address;
@@ -8,10 +8,10 @@ public class employee {
     private String department;
     private String workShifts;
 
-    public employee() {
+    public Employee() {
     }
 
-    public employee(int id, String name, String address, String hourWages, String department, String workShifts) {
+    public Employee(int id, String name, String address, String hourWages, String department, String workShifts) {
         this.id = id;
         this.name = name;
         this.address = address;

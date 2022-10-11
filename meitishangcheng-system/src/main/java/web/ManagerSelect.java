@@ -1,21 +1,21 @@
 package web;
 
-import pojo.manager;
-import service.managerService;
+import pojo.Manager;
+import service.ManagerService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.IOException;
 @WebServlet("/managerSelect")
-public class managerSelect extends HttpServlet {
-    managerService managerService = new managerService();
+public class ManagerSelect extends HttpServlet {
+    ManagerService managerService = new ManagerService();
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String username = req.getParameter("username");
         String password = req.getParameter("password");
-        manager manager1 = new manager(0,username,password,true,null);
-        manager manager = managerService.select(manager1);
+        Manager manager1 = new Manager(0,username,password,true,null);
+        Manager manager = managerService.select(manager1);
         if (manager != null) {
             if (req.getParameter("remember") != null) {
                 Cookie cookie1 = new Cookie("username", username);

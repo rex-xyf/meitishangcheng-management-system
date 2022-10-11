@@ -1,16 +1,16 @@
 package pojo;
 
-public class manager {
+public class Manager {
     private int id;
     private String username;
     private String password;
     private boolean permission;
     private String email;
 
-    public manager() {
+    public Manager() {
     }
 
-    public manager(int id, String username, String password, boolean permission, String email) {
+    public Manager(int id, String username, String password, boolean permission, String email) {
         this.id = id;
         this.username = username;
         this.password = password;
