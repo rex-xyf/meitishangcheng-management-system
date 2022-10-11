@@ -17,7 +17,7 @@ public class filter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         String string = request.getRequestURL().toString();
-        String [] strings ={"/login.jsp","/register.jsp","/index.html","/managerSelect","/managerRegister","userCheckCode","/css/","/img/"};
+        String [] strings ={"/login.jsp","/index.html","/register.jsp","/index.html","/managerSelect","/managerRegister","userCheckCode","/css/","/img/"};
         for (String s : strings) {
             if (string.contains(s)){
                 filterChain.doFilter(request,servletResponse);
@@ -26,7 +26,7 @@ public class filter implements Filter {
         }
         HttpSession session = request.getSession();
         if (session.getAttribute("manager")==null){
-            request.setAttribute("fell","您尚未登录");
+            request.setAttribute("fell","Please login first！");
             request.getRequestDispatcher("/login.jsp").forward(request,servletResponse);
         }
         if (session.getAttribute("manager")!=null){

@@ -23,19 +23,23 @@ public class managerRegister extends HttpServlet {
         String code1 = req.getParameter("code");
         System.out.println(code);
         System.out.println(code1);
-        if (code.equals(code1)) {
-            if (select != null) {
-                req.setAttribute("registerFell", "该用户名已被注册");
-                req.getRequestDispatcher("register.jsp").forward(req, resp);
+        if (code == null) {
+            req.setAttribute("registerFell", "Please click to send verification code");
+            req.getRequestDispatcher("register.jsp").forward(req, resp);
+        } else {
+            if (code.equals(code1)) {
+                if (select != null) {
+                    req.setAttribute("registerFell", "The user name has been registered");
+                    req.getRequestDispatcher("register.jsp").forward(req, resp);
+                } else {
+                    manager manager = new manager(0, username, password, true, email);
+                    managerService.add(manager);
+                    req.getRequestDispatcher("login.jsp").forward(req, resp);
+                }
             } else {
-                manager manager = new manager(0,username, password,true,email);
-                managerService.add(manager);
-                req.getRequestDispatcher("login.jsp").forward(req, resp);
+                req.setAttribute("registerFell", "Incorrect input of verification code");
+                req.getRequestDispatcher("register.jsp").forward(req, resp);
             }
-        }
-        else{
-            req.setAttribute("registerFell","验证码输入有误");
-            req.getRequestDispatcher("register.jsp").forward(req,resp);
         }
     }
 

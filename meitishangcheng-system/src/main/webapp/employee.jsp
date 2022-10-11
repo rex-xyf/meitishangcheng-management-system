@@ -22,13 +22,13 @@
     <hr>
 <table border="1" cellspacing="0" width="1000" align="center">
     <tr>
-        <th>员工编号</th>
-        <th>员工姓名</th>
-        <th class="address">员工住址</th>
-        <th>小时工资</th>
-        <th>所属部门</th>
-        <th>工作班次</th>
-        <th>操作</th>
+        <th>id</th>
+        <th>name</th>
+        <th class="address">address</th>
+        <th>hour wages</th>
+        <th>department</th>
+        <th>work shifts</th>
+        <th>operation</th>
     </tr>
     <c:forEach items="${employee}" var="employee" varStatus="id">
         <tr>
@@ -47,8 +47,8 @@
 <%--                </c:if>--%>
 <%--            </td>--%>
             <td>
-                <a href="/meitishangcheng-system/employeeSelectById?id=${employee.id}">修改</a>
-                <a href="/meitishangcheng-system/employeeDelete?id=${employee.id}">删除</a>
+                <a href="/meitishangcheng-system/employeeSelectById?id=${employee.id}">update</a>
+                <a href="/meitishangcheng-system/employeeDelete?id=${employee.id}">delete</a>
             </td>
         </tr>
     </c:forEach>
