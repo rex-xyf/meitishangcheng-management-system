@@ -54,4 +54,12 @@ public class EmployeeService {
         mapper.deleteByIds(ids);
         sqlSession.close();
     }
+
+    public List<Employee> select(String key,String value){
+        SqlSession sqlSession = sqlSessionFactory.openSession(true);
+        EmployeeMapper mapper = sqlSession.getMapper(EmployeeMapper.class);
+        List<Employee> employees = mapper.select(key, value);
+        sqlSession.close();
+        return employees;
+    }
 }

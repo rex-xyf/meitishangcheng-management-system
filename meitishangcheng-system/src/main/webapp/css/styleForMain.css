@@ -1,3 +1,8 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
 h1{
     margin: 30px;
 }
@@ -52,6 +57,10 @@ a:visited{
     right: 0;
 }
 
+#delete span:after{
+    content: '×';
+}
+
 #white{
     padding-right: 25px;
 }
@@ -63,14 +72,36 @@ a:visited{
     padding-right: 50px;
 }
 
+.selected,.submit ,.text{
+    border-radius: 40px;
+    background-color: black;
+    border: none;
+    color: #FFFFFF;
+    text-align: center;
+    font-size: 22px;
+    padding: 20px;
+    width: 160px;
+    margin: 5px;
+    vertical-align:middle;
+}
+
+.text{
+    padding: 18px;
+    border-color: black;
+    border-style: solid;
+    width: 400px;
+    color: black;
+    background-color: #FFFFFF;
+}
+
 table {
-    width: 1300px;
+    width: 1200px;
     border: 1px solid white;
 }
 
 th {
     color: white;
-    width: 180px;
+    width: 140px;
     height: 65px;
     background-color: black;
     border: 0px;
@@ -78,7 +109,7 @@ th {
     text-align: center;
 }
 .address {
-    width: 300px;
+    width: 250px;
 }
 
 .id{
@@ -92,4 +123,69 @@ td {
     border: 0px;
     text-align: center;
 }
+
+.top{
+    height: 60px;
+    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2), 0 2px 20px 0 rgba(0, 0, 0, 0.19);
+    font-size: 28px;
+}
+
+.welcome{
+    padding-left: 100px;
+}
+
+.userPhoto{
+    padding-top: 5px;
+    padding-right: 20px;
+    float: right;
+}
+
+.user{
+    line-height: 60px;
+    float: right;
+    padding-right: 200px;
+}
+
+.bar {
+    float: left;
+    width: 200px;
+    display: inline-block;
+    height: 692px;
+    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2), 0 2px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.bar>a {
+    background-color: #fefefe;
+    width: 200px;
+    height: 58px;
+    font-size:17px;
+    font-family: 'Microsoft YaHei UI',serif;
+    line-height: 58px;
+    text-decoration:none;
+    color: black;
+    display: block;
+    /*padding-left: 37px;*/
+    /*text-indent: 37px;*/
+    text-align: center;
+}
+
+.bar>a:hover{
+    background-color:black;
+    color: white;
+}
+
+.table {
+    display: inline-block;
+    float: left;
+    text-align: center;
+    padding-left: 68px;
+    padding-top: 20px;
+}
+
+hr{
+    margin-top: 15px;
+}
+
+
+
 
