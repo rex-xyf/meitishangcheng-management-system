@@ -15,7 +15,7 @@ public class EmployeeDelete extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         int id = Integer.parseInt(req.getParameter("id"));
         employeeService.delete(id);
-        resp.sendRedirect("/meitishangcheng-system/employeeSelectAll");
+        resp.sendRedirect("/meitishangcheng-system/employeeSelectLimit?page="+req.getParameter("page"));
     }
 
     @Override

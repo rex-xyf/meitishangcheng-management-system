@@ -62,4 +62,20 @@ public class EmployeeService {
         sqlSession.close();
         return employees;
     }
+
+    public List<Employee> selectLimit(int begin, int size){
+        SqlSession sqlSession = sqlSessionFactory.openSession(true);
+        EmployeeMapper mapper = sqlSession.getMapper(EmployeeMapper.class);
+        List<Employee> employees = mapper.selectLimit(begin, size);
+        sqlSession.close();
+        return employees;
+    }
+
+    public int selectCount(){
+        SqlSession sqlSession = sqlSessionFactory.openSession(true);
+        EmployeeMapper mapper = sqlSession.getMapper(EmployeeMapper.class);
+        int count = mapper.selectCount();
+        sqlSession.close();
+        return count;
+    }
 }

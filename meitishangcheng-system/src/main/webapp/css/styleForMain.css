@@ -186,6 +186,30 @@ hr{
     margin-top: 15px;
 }
 
+.bottom-span{
+    width: 1200px;
+    height: 50px;
+    line-height: 50px;
+}
 
+.left{
+    float: left;
+    padding-left: 100px;
+}
+
+.right{
+    float: right;
+    padding-right: 100px;
+}
+
+.page{
+    width: 30px;
+}
+
+.go,.operation{
+    color: white;
+    background-color: black;
+    border-radius: 7px;
+}
 
 

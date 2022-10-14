@@ -20,14 +20,13 @@
     </div>
     <div class="bottom">
     <div class="bar">
-        <a href="http://localhost:8080/meitishangcheng-system/employeeSelectAll">Employee</a>
+        <a href="http://localhost:8080/meitishangcheng-system/employeeSelectLimit?page=1">Employee</a>
         <a href="#">Stock</a>
         <a href="#">Information</a>
     </div>
     <div class="table">
     <form action="/meitishangcheng-system/employeeDeleteByIds" method="post">
-<%--    <span id="white"></span>--%>
-    <button class="button" type="button" onclick="add()"><span>ADD </span></button>
+    <button class="button" type="submit" formaction="http://localhost:8080/meitishangcheng-system/add.jsp"><span>ADD </span></button>
     <button class="button" id="delete" type="submit"><span>DeleteAll </span></button>
     <select class="selected" name="selected" >
         <option value="name" ${selectName}>name</option>
@@ -59,29 +58,30 @@
             <td>${employee.hourWages}</td>
             <td>${employee.department}</td>
             <td>${employee.workShifts}</td>
-<%--            <td>--%>
-<%--                <c:if test="${employees.state==1}">--%>
-<%--                    启用--%>
-<%--                </c:if>--%>
-<%--                <c:if test="${employees.state!=1}">--%>
-<%--                    禁用--%>
-<%--                </c:if>--%>
-<%--            </td>--%>
             <td>
-                <a href="/meitishangcheng-system/employeeSelectById?id=${employee.id}">update</a>
-                <a href="/meitishangcheng-system/employeeDelete?id=${employee.id}">delete</a>
+                <input class="operation" type="submit" value="update" formaction="http://localhost:8080/meitishangcheng-system/employeeSelectById?id=${employee.id}">
+                <input class="operation" type="submit" value="delete" formaction="http://localhost:8080/meitishangcheng-system/employeeDelete?id=${employee.id}">
             </td>
         </tr>
     </c:forEach>
     </table>
+        <span class="bottom-span">
+        <span class="left">${messageCount}Messages In Total</span>
+        <span class="center">
+            <c:if test="${currentPage!=1}">
+                <a href='/meitishangcheng-system/employeeSelectLimit?page=${currentPage-1}'><</a>
+            </c:if>
+            <c:if test="${currentPage != totalPage}">
+                <a href='/meitishangcheng-system/employeeSelectLimit?page=${currentPage+1}'>></a>
+            </c:if>
+        </span>
+        <span class="right">
+            Go to<input type="text" name="page" class="page" value="${currentPage}">Page
+            <input type="submit" class="go" formaction="http://localhost:8080/meitishangcheng-system/employeeSelectLimit" value="Go">
+        </span>
+        </span>
     </form>
     </div>
     </div>
 </body>
 </html>
-
-<script>
-    function add(){
-        location.href="add.jsp";
-    }
-</script>

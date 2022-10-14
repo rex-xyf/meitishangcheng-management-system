@@ -22,6 +22,7 @@
                 <input type="text" name="hourWages" placeholder="hourWages" class="input-item">
                 <input type="text" name="department" placeholder="department" class="input-item">
                 <input type="text" name="workShifts" placeholder="workShifts" class="input-item">
+                <input hidden type="text" name="page" value="<%=request.getParameter("page")%>">
                 <input type="submit" class="btn" value="Add">
             </form>
         </div>

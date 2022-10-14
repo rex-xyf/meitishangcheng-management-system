@@ -18,6 +18,7 @@ public class EmployeeSelectById extends HttpServlet {
         int id = Integer.parseInt(req.getParameter("id"));
         Employee employee = employeeService.selectById(id);
         req.setAttribute("employee", employee);
+        req.setAttribute("page",req.getParameter("page"));
         req.getRequestDispatcher("/update.jsp").forward(req,resp);
     }
 

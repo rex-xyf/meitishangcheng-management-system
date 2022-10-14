@@ -36,7 +36,7 @@ public class ManagerSelect extends HttpServlet {
             HttpSession session = req.getSession();
             session.setAttribute("manager", manager);
             //req.setAttribute("user",user.getUsername());
-            req.getRequestDispatcher("/employeeSelectAll").forward(req, resp);
+            req.getRequestDispatcher("/employeeSelectLimit?page=1").forward(req, resp);
 
         }
         else {

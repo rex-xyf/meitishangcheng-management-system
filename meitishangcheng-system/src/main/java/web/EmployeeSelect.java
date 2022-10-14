@@ -17,6 +17,7 @@ public class EmployeeSelect extends HttpServlet {
     EmployeeService employeeService = new EmployeeService();
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.setCharacterEncoding("utf-8");
         String key = req.getParameter("selected");
         String value = req.getParameter("text");
         System.out.println(key);

@@ -19,7 +19,7 @@ public class EmployeeDeleteByIds extends HttpServlet {
             ids[i] = Integer.parseInt(selects[i]);
         }
         employeeService.deleteByIds(ids);
-        resp.sendRedirect("/meitishangcheng-system/employeeSelectAll");
+        resp.sendRedirect("/meitishangcheng-system/employeeSelectLimit?page="+req.getParameter("page"));
     }
 
     @Override

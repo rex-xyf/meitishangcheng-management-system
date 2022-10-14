@@ -23,6 +23,7 @@
                 <input type="text" name="hourWages" placeholder="hourWages" class="input-item" value="${employee.hourWages}">
                 <input type="text" name="department" placeholder="department" class="input-item" value="${employee.department}">
                 <input type="text" name="workShifts" placeholder="workShifts" class="input-item" value="${employee.workShifts}">
+                <input type="text" value="<%=request.getAttribute("page")%>" hidden name="page">
                 <input type="submit" class="btn" value="update">
             </form>
         </div>

@@ -19,4 +19,8 @@ public interface EmployeeMapper {
     void deleteByIds(@Param("ids") int[] ids);
 
     List<Employee> select(@Param("key") String key, @Param("value") String value);
+
+    List<Employee> selectLimit(@Param("begin")int begin,@Param("size")int size);
+
+    int selectCount();
 }

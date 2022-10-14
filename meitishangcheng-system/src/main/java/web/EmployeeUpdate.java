@@ -23,7 +23,7 @@ public class EmployeeUpdate extends HttpServlet {
         String workShifts = req.getParameter("workShifts");
         Employee employee = new Employee(id,name,address,hourWages,department,workShifts);
         employeeService.update(employee);
-        resp.sendRedirect("/meitishangcheng-system/employeeSelectAll");
+        resp.sendRedirect("/meitishangcheng-system/employeeSelectLimit?page="+req.getParameter("page"));
     }
 
     @Override
