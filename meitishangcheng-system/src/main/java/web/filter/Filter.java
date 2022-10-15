@@ -16,7 +16,7 @@ public class Filter implements javax.servlet.Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         String string = request.getRequestURL().toString();
-        String [] strings ={"/login.jsp","/index.html","/register.jsp","/index.html","/managerSelect","/managerRegister","userCheckCode","/css/","/img/"};
+        String [] strings ={"/login.jsp","/index.html","/register.jsp","/index.html","/managerSelect","/managerRegister","/userCheckCode","/loginCheckCode","/css/","/img/"};
         for (String s : strings) {
             if (string.contains(s)){
                 filterChain.doFilter(request,servletResponse);

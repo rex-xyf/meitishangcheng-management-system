@@ -29,6 +29,11 @@
         <span data-placeholder="Password"></span>
     </div>
 
+    <div class="img">
+        <input type="text" name="code" class="code" placeholder=" CAPTCHA" required oninvalid="setCustomValidity('Please input a Captcha');" oninput="setCustomValidity('');">
+        <img class="checkCodeImg" id="checkCodeImg" src="/meitishangcheng-system/loginCheckCode">
+    </div>
+
     <div class="check">
         <span class="remember">Remember Me</span><input type="checkbox" id="remember" name="remember" value="1" checked>
     </div>
@@ -41,7 +46,11 @@
     </div>
 
 </form>
-
+<script>
+    document.getElementById("checkCodeImg").onclick=function (){
+        document.getElementById("checkCodeImg").src="/meitishangcheng-system/loginCheckCode?"+new Date().getMilliseconds();
+    }
+</script>
 <script type="text/javascript">
     $(".txt input").on("focus", function(){
         $(this).addClass("focus");
