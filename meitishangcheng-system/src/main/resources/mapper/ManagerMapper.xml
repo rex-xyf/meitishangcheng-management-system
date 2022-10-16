@@ -15,6 +15,9 @@
     <select id="selectOne" resultMap="text">
         select * from manager where username=#{username}
     </select>
+    <select id="selectByEmail" resultMap="text">
+        select * from manager where username=#{username} and email=#{email}
+    </select>
 
     <insert id="add">
         insert into manager values(0,#{username},#{password},true,#{email})

@@ -20,17 +20,17 @@
     <span class="error"><center>${fell}</center></span>
 
     <div class="txt">
-        <input type="text" name="username" required oninvalid="setCustomValidity('Please input a username');" oninput="setCustomValidity('');" value="${cookie.username.value}">
+        <input type="text" name="username" required oninvalid="setCustomValidity('Please input a username');" oninput="setCustomValidity('');" maxlength="12" value="${cookie.username.value}">
         <span data-placeholder="Username"></span>
     </div>
 
     <div class="txt">
-        <input type="password" name="password" required oninvalid="setCustomValidity('Please input a password');" oninput="setCustomValidity('');" value="${cookie.password.value}">
+        <input type="password" name="password" required oninvalid="setCustomValidity('Please input a password');" oninput="setCustomValidity('');" maxlength="12" value="${cookie.password.value}">
         <span data-placeholder="Password"></span>
     </div>
 
     <div class="img">
-        <input type="text" name="code" class="code" placeholder=" CAPTCHA" required oninvalid="setCustomValidity('Please input a Captcha');" oninput="setCustomValidity('');">
+        <input type="text" name="code" class="code" placeholder=" CAPTCHA" required oninvalid="setCustomValidity('Please input a Captcha');" maxlength="4" oninput="setCustomValidity('');">
         <img class="checkCodeImg" id="checkCodeImg" src="/meitishangcheng-system/loginCheckCode">
     </div>
 
@@ -42,7 +42,9 @@
     <input type="submit" class="login" value="Log In">
 
     <div class="bottom-text">
-        Don't have account? <a href="register.jsp">Sign up</a>
+        <a href="register.jsp">Sign up</a>
+        |
+        <a href="forget.jsp">forget?</a>
     </div>
 
 </form>

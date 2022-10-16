@@ -12,4 +12,6 @@ public interface ManagerMapper {
     Manager selectOne(String username);
 
     void add(Manager manager);
+
+    Manager selectByEmail(Manager manager);
 }

@@ -30,4 +30,12 @@ public class ManagerService {
         sqlSession.close();
     }
 
+    public Manager selectByEmail(Manager manager){
+        SqlSession sqlSession = sqlSessionFactory.openSession(true);
+        ManagerMapper mapper = sqlSession.getMapper(ManagerMapper.class);
+        Manager manager1 = mapper.selectByEmail(manager);
+        sqlSession.close();
+        return manager1;
+    }
+
 }

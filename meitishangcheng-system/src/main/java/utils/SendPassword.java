@@ -5,7 +5,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 
-public class MailUtil  {
+public class SendPassword  {
     public static void sendMail(String mail,String actcode) {
         // 1.创建连接对象javax.mail.Session
         // 2.创建邮件对象 javax.mail.Message
@@ -40,7 +40,7 @@ public class MailUtil  {
             message.setSubject("账号激活");
             // 2.4设置邮件内容
             String content = "<html><head></head><body><h1>Dear user!<br>" +
-                    "<h3>This is your verification code. Please use it within 10 minutes.</h3>" +
+                    "<h3>This is your password. Please don not forget . You can also enter the system to change your password</h3>" +
                     "</h1><h3>"+actcode+"<br>----form metishangcheng-system</h3></body></html>";
             message.setContent(content, "text/html;charset=UTF-8");
             // 3.发送邮件
@@ -50,3 +50,4 @@ public class MailUtil  {
         }
     }
 }
+
