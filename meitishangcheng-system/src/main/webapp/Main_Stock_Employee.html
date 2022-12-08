@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Meitishangcheng</title>
+</head>
+<body>
+<div id="stock">
+    <el-header>
+        <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal">
+            <span class="welcome"><img src="img/logo.png" style=" padding-left: 20px"></span>
+            <span class="user" style="float: right; padding-right:50px ;font-size: 20px ; line-height: 55px">{{User}} | <a href="login.html"><i class="el-icon-switch-button"></i></a></span>
+            <span class="userPhoto" style="float: right"><img src="img/user.png"></span>
+        </el-menu>
+    </el-header>
+    <el-container>
+        <!--侧边-->
+        <el-aside>
+            <el-col>
+                <el-menu
+                        default-active="3"
+                        class="el-menu-vertical-demo">
+                    <el-menu-item index="1" @click="toMain_Employee">
+                        <i class="el-icon-user-solid"></i>
+                        <span slot="title">Personal Information</span>
+                    </el-menu-item>
+                    <el-menu-item index="2" @click="toMain_Employee_Schedule">
+                        <i class="el-icon-date"></i>
+                        <span slot="title" >Daily Schedule</span>
+                    </el-menu-item>
+                    <el-menu-item index="3" @click="toMain_Stock_Employee" :disabled="Manager4">
+                        <i class="el-icon-s-goods"></i>
+                        <span slot="title">Stock Management</span>
+                    </el-menu-item>
+                    <el-menu-item index="4" @click="toMain_ChangePassword_Employee">
+                        <i class="el-icon-setting"></i>
+                        <span slot="title">Change Password</span>
+                    </el-menu-item>
+                </el-menu>
+            </el-col>
+        </el-aside>
+        <!--主页面-->
+        <el-main>
+            <!--搜索栏-->
+            <el-form :inline="true" :model="formInline" class="demo-form-inline">
+                <el-form-item label="Search">
+                    <el-select v-model="formInline.key" placeholder="" >
+                        <el-option label="Name" value="name"></el-option>
+                        <el-option label="Type" value="type"></el-option>
+                        <el-option label="Price" value="price"></el-option>
+                        <el-option label="Amount" value="amount"></el-option>
+                        <el-option label="Estimated Quantity" value="estimatedQuantity"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item >
+                    <el-input v-model="formInline.value" placeholder=""></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="Search">search</el-button>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="Reset">reset</el-button>
+                </el-form-item>
+            </el-form>
+
+            <!--表格-->
+            <template>
+                <el-table
+                        :data="tableData"
+                        style="width: 100%"
+                        :default-sort = "{prop: 'date', order: 'descending'}"
+                        @selection-change="handleSelectionChange"
+                >
+                    </el-table-column>
+                    <el-table-column
+                            align="center"
+                            type="index"
+                            sortable>
+                    </el-table-column>
+                    <el-table-column
+                            align="center"
+                            prop="name"
+                            label="Name">
+                    </el-table-column>
+                    <el-table-column
+                            align="center"
+                            prop="type"
+                            label="Type"
+                            :filters="[{ text: 'food', value: 'food' }, { text: 'drugs', value: 'drugs' },{ text: 'daily use', value: 'daily use' },{ text: 'electronic product', value: 'electronic product' }]"
+                            :filter-method="filterTag"
+                            filter-placement="bottom-end">
+                        <template slot-scope="scope">
+                            <el-tag
+                                    :type="scope.row.type === 'food' ? 'primary' : scope.row.type === 'drugs' ? 'danger' : scope.row.type === 'daily use' ? 'success': scope.row.type === 'electronic product' ? 'info' : 'warning'"
+                                    disable-transitions>{{scope.row.type}}</el-tag>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            align="center"
+                            prop="price"
+                            label="Price"
+                            sortable
+                    >
+                    </el-table-column>
+                    <el-table-column
+                            align="center"
+                            prop="amount"
+                            label="Amount"
+                            sortable
+                    >
+                    </el-table-column>
+                    <el-table-column
+                            align="center"
+                            prop="estimatedQuantity"
+                            label="Estimated Quantity"
+                            sortable
+                    >
+                    </el-table-column>
+                    <el-table-column label="operation"
+                                     align="center">
+                        <template slot-scope="scope">
+                            <el-button
+                                    size="mini"
+                                    @click="handleEdit(scope.$index, scope.row)">Request Purchase</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </template>
+
+            <!--修改页面-->
+            <el-dialog
+                    title="Request Purchase"
+                    :visible.sync="dialogVisible"
+                    width="25%">
+
+                <el-form ref="form" :model="form" label-width="145px">
+                    <el-form-item label="Purchase Quantity">
+                        <template>
+                            <el-input-number v-model="form.num"  :min="0" :max="100000" :step="100"></el-input-number>
+                        </template>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" @click="update">submit</el-button>
+                        <el-button @click="dialogVisible = false">cancel</el-button>
+                    </el-form-item>
+                </el-form>
+            </el-dialog>
+
+            <!--分页栏-->
+            <template>
+                <div class="block" align="center">
+                    <el-pagination
+                            @size-change="handleSizeChange"
+                            @current-change="handleCurrentChange"
+                            :current-page="currentPage"
+                            :page-sizes="[5, 10, 15]"
+                            :page-size="pageSize"
+                            layout="total, sizes, prev, pager, next, jumper"
+                            :total="pageCount">
+                    </el-pagination>
+                </div>
+            </template>
+        </el-main>
+    </el-container>
+</div>
+<script src="js/vue.js"></script>
+<script src="js/axios.js"></script>
+<script src="element-ui/lib/index.js"></script>
+<link rel="stylesheet" href="element-ui/lib/theme-chalk/index.css">
+<script src="element-ui/lib/umd/locale/en.js"></script>
+<script>
+    ELEMENT.locale(ELEMENT.lang.en);
+    new Vue({
+        el:"#stock",
+        mounted(){
+            this.User = this.getCookie("isLogin");
+            this.selectStock()
+            this.selectAll();
+        },
+        data() {
+            return {
+                Manager4:true,
+                //当前用户
+                User: '',
+                //请求进货数量
+                form:{
+                    num:''
+                },
+                //表格
+                tableData:[],
+                //搜索框
+                formInline: {
+                    key:'',
+                    value:''
+                },
+                //对话框
+                dialogVisible: false,
+                //分页当前页数
+                currentPage: 1,
+                //总数据数
+                pageCount:0,
+                //查询页数
+                pageSize:5,
+                //设置行数id
+                RowId:0,
+            }
+        },
+        methods: {
+            //跳转
+            toMain_ChangePassword_Employee(){
+                location.href="http://localhost:8080/meitishangcheng-system/Main_ChangePassword_Employee.html"
+            },
+            toMain_Stock_Employee(){
+                location.href="http://localhost:8080/meitishangcheng-system/Main_Stock_Employee.html"
+            },
+            toMain_Employee_Schedule(){
+                location.href="http://localhost:8080/meitishangcheng-system/Main_Employee_Schedule.html"
+            },
+            toMain_Employee(){
+                location.href="http://localhost:8080/meitishangcheng-system/Main_Employee.html"
+            },
+            //获取cookie
+            getCookie(name) {
+                var cookieArr = document.cookie.split(";");
+                for (var i = 0; i < cookieArr.length; i++) {
+                    var cookiePair = cookieArr[i].split("=");
+                    if (name == cookiePair[0].trim()) {
+                        return decodeURIComponent(cookiePair[1]);
+                    }
+                }
+                return null;
+            },
+            formatter(row, column) {
+                return row.address;
+            },
+            filterTag(value, row) {
+                return row.workShifts === value;
+            },
+            filterHandler(value, row, column) {
+                const property = column['property'];
+                return row[property] === value;
+            },
+            //成功
+            Success() {
+                this.$message({
+                    showClose: true,
+                    message: 'Success!',
+                    type: 'success'
+                });
+            },
+            //失败
+            Error() {
+                this.$message({
+                    showClose: true,
+                    message: 'error',
+                    type: 'error'
+                });
+            },
+            //查询是否为stock管理
+            selectStock(){
+                axios({
+                    method:"post",
+                    url:"http://localhost:8080/meitishangcheng-system/userSelectStock",
+                    data:this.User
+                }).then(resp =>{
+                    if (resp.data === 'yes'){
+                        this.Manager4 = false
+                    }
+                })
+            },
+            //查询所有
+            selectAll(){
+                axios({
+                    method:"post",
+                    url:"http://localhost:8080/meitishangcheng-system/stockSelectAllServlet?currentPage="+this.currentPage+"&pageSize="+this.pageSize,
+                    data:this.formInline
+                }).then(resp =>{
+                    this.tableData = resp.data.stocks;
+                    this.pageCount = resp.data.count;
+                })
+            },
+            //修改
+            handleEdit(index, row) {
+                this.dialogVisible = true
+                this.RowId = row.id
+            },
+            //页面修改
+            update(){
+                axios({
+                    method: "get",
+                    url: "http://localhost:8080/meitishangcheng-system/stockPurchaseServlet?id="+this.RowId+"&num="+this.form.num
+                }).then(resp=>{
+                    if (resp.data ==='success'){
+                        this.selectAll()
+                        this.dialogVisible = false
+                        this.Success()
+                    }else {
+                        this.selectAll()
+                        this.dialogVisible = false
+                        this.Error()
+                    }
+                })
+            },
+            //搜索
+            Search() {
+                this.selectAll();
+            },
+            //取消搜索
+            Reset(){
+                this.formInline={};
+                this.selectAll();
+            },
+            //分页
+            handleSizeChange(val) {
+                this.pageSize = val;
+                this.selectAll();
+            },
+            handleCurrentChange(val) {
+                this.currentPage = val;
+                this.selectAll();
+            }
+        }
+    })
+</script>
+
+</body>
+</html>

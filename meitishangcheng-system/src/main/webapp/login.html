@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>login</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" charset="utf-8"></script>
+    <script src="js/vue.js"></script>
+    <script src="js/axios.js"></script>
+    <script src="element-ui/lib/index.js"></script>
+    <link rel="stylesheet" href="element-ui/lib/theme-chalk/index.css">
+</head>
+<body>
+<div id="login">
+<form action="#" class="login-form" >
+    <h1>Log In</h1>
+
+    <div class="txt">
+        <input type="text" v-model="Manager.username"  name="username"  maxlength="12" >
+        <span data-placeholder="Username"></span>
+    </div>
+
+    <div class="txt">
+        <input type="password" v-model="Manager.password" name="password"  maxlength="12" >
+        <span data-placeholder="Password"></span>
+    </div>
+
+    <div class="img">
+        <input type="text" v-model="CAPTCHA" name="code" class="code" placeholder=" CAPTCHA"  maxlength="4" >
+        <img class="checkCodeImg" id="checkCodeImg" src="/meitishangcheng-system/loginCheckCode">
+    </div>
+
+    <div class="check">
+        <span class="remember">Remember Me</span><input type="checkbox" v-model="remember" id="remember" name="remember" value="true" checked>
+    </div>
+
+
+    <input type="button" class="login" value="Log In" @click="login">
+
+    <div class="bottom-text">
+        <a href="register.html">Sign up</a>
+        |
+        <a href="forget.html">forget?</a>
+    </div>
+
+</form>
+</div>
+</body>
+<script>
+    new Vue({
+        el:"#login",
+        mounted(){
+            if (this.getCookie("username") !== '""' && this.getCookie("password") !== '""') {
+                this.Manager.username = this.getCookie("username")
+                this.Manager.password = this.getCookie("password")
+            }
+        },
+        data(){
+            return{
+                remember:false,
+                CAPTCHA:'',
+                Manager:{
+                    username:'',
+                    password:'',
+                }
+            }
+        },
+        methods: {
+            //获取cookie
+            getCookie(name) {
+                var cookieArr = document.cookie.split(";");
+                for (var i = 0; i < cookieArr.length; i++) {
+                    var cookiePair = cookieArr[i].split("=");
+                    if (name == cookiePair[0].trim()) {
+                        return decodeURIComponent(cookiePair[1]);
+                    }
+                }
+                return null;
+            },
+            open1() {
+                this.$notify.error({
+                    title: 'error',
+                    message: 'Username or password error'
+                });
+            },
+            open2() {
+                this.$notify.error({
+                    title: 'error',
+                    message: 'CAPTCHA error'
+                });
+            },
+            open3() {
+                this.$notify.error({
+                    title: 'error',
+                    message: 'Unknown error'
+                });
+            },
+            open4() {
+                this.$notify({
+                    title: 'warning',
+                    message: 'Please input a username',
+                    type: 'warning'
+                });
+            },
+            open5() {
+                this.$notify({
+                    title: 'warning',
+                    message: 'Please input a password',
+                    type: 'warning'
+                });
+            },
+            open6() {
+                this.$notify({
+                    title: 'warning',
+                    message: 'Please input a CAPTCHA',
+                    type: 'warning'
+                });
+            },
+            login() {
+                if (this.Manager.username === '') {
+                    this.open4()
+                } else if (this.Manager.password === '') {
+                    this.open5()
+                } else
+                if (this.CAPTCHA === '') {
+                    this.open6()
+                } else {
+                    axios({
+                        method: "post",
+                        url: "http://localhost:8080/meitishangcheng-system/managerSelect?code=" + this.CAPTCHA + "&remember=" + this.remember,
+                        data: this.Manager
+                    }).then(resp => {
+                        if (resp.data === 'manager') {
+                            location.href = "Main.html"
+                        }else if (resp.data === 'employee'){
+                            location.href = "Main_Employee.html"
+                        } else if (resp.data === 'fell') {
+                            this.open1()
+                        } else if (resp.data === 'error') {
+                            this.open2()
+                        } else {
+                            this.open3()
+                        }
+                    })
+                }
+            }
+        }
+    });
+</script>
+<script>
+    document.getElementById("checkCodeImg").onclick=function (){
+        document.getElementById("checkCodeImg").src="/meitishangcheng-system/loginCheckCode?"+new Date().getMilliseconds();
+    }
+</script>
+<script type="text/javascript">
+    $(".txt input").on("focus", function(){
+        $(this).addClass("focus");
+    });
+
+    $(".txt input").on("blur", function(){
+        if($(this).val() == "")
+            $(this).removeClass("focus");
+    });
+</script>
+</html>

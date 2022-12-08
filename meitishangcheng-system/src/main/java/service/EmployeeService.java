@@ -1,7 +1,6 @@
 package service;
 
 import mapper.EmployeeMapper;
-import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import pojo.Employee;
@@ -11,33 +10,27 @@ import java.util.List;
 
 public class EmployeeService {
     SqlSessionFactory sqlSessionFactory = GetSqlSessionFactory.get();
-    public List<Employee> selectAll(){
+    public List<Employee> selectAll(int currentPage, int pageSize,String key,String value){
+        int begin = (currentPage-1)*pageSize;
+        int size = pageSize;
         SqlSession sqlSession = sqlSessionFactory.openSession(true);
         EmployeeMapper mapper = sqlSession.getMapper(EmployeeMapper.class);
-        List<Employee> employees = mapper.selectAll();
+        List<Employee> employees = mapper.selectAll(begin,size,key,value);
         sqlSession.close();
         return employees;
     }
 
-    public void add(Employee Employee) {
+    public void add(Employee employee) {
         SqlSession sqlSession = sqlSessionFactory.openSession(true);
         EmployeeMapper mapper = sqlSession.getMapper(EmployeeMapper.class);
-        mapper.add(Employee);
+        mapper.add(employee);
         sqlSession.close();
     }
 
-    public Employee selectById(int id){
+    public void addId(Employee employee) {
         SqlSession sqlSession = sqlSessionFactory.openSession(true);
         EmployeeMapper mapper = sqlSession.getMapper(EmployeeMapper.class);
-        Employee Employee = mapper.selectById(id);
-        sqlSession.close();
-        return Employee;
-    }
-
-    public void update(Employee Employee){
-        SqlSession sqlSession = sqlSessionFactory.openSession(true);
-        EmployeeMapper mapper = sqlSession.getMapper(EmployeeMapper.class);
-        mapper.update(Employee);
+        mapper.addId(employee);
         sqlSession.close();
     }
 
@@ -48,34 +41,41 @@ public class EmployeeService {
         sqlSession.close();
     }
 
-    public void deleteByIds( int[] ids){
+    public void update(Employee employee){
+        SqlSession sqlSession = sqlSessionFactory.openSession(true);
+        EmployeeMapper mapper = sqlSession.getMapper(EmployeeMapper.class);
+        mapper.update(employee);
+        sqlSession.close();
+    }
+
+    public Employee selectById(int id){
+        SqlSession sqlSession = sqlSessionFactory.openSession(true);
+        EmployeeMapper mapper = sqlSession.getMapper(EmployeeMapper.class);
+        Employee employee = mapper.selectById(id);
+        sqlSession.close();
+        return employee;
+    }
+
+    public void deleteByIds (int[] ids){
         SqlSession sqlSession = sqlSessionFactory.openSession(true);
         EmployeeMapper mapper = sqlSession.getMapper(EmployeeMapper.class);
         mapper.deleteByIds(ids);
         sqlSession.close();
     }
 
-    public List<Employee> select(String key,String value){
+    public int count(String key,String value){
         SqlSession sqlSession = sqlSessionFactory.openSession(true);
         EmployeeMapper mapper = sqlSession.getMapper(EmployeeMapper.class);
-        List<Employee> employees = mapper.select(key, value);
-        sqlSession.close();
-        return employees;
-    }
-
-    public List<Employee> selectLimit(int begin, int size){
-        SqlSession sqlSession = sqlSessionFactory.openSession(true);
-        EmployeeMapper mapper = sqlSession.getMapper(EmployeeMapper.class);
-        List<Employee> employees = mapper.selectLimit(begin, size);
-        sqlSession.close();
-        return employees;
-    }
-
-    public int selectCount(){
-        SqlSession sqlSession = sqlSessionFactory.openSession(true);
-        EmployeeMapper mapper = sqlSession.getMapper(EmployeeMapper.class);
-        int count = mapper.selectCount();
+        int count = mapper.count(key,value);
         sqlSession.close();
         return count;
+    }
+
+    public List<Employee> selectByIds(int[] ids){
+        SqlSession sqlSession = sqlSessionFactory.openSession(true);
+        EmployeeMapper mapper = sqlSession.getMapper(EmployeeMapper.class);
+        List<Employee> employees = mapper.selectByIds(ids);
+        sqlSession.close();
+        return employees;
     }
 }

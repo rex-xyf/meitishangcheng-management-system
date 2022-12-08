@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Meitishangcheng</title>
+</head>
+<body>
+<div id="schedule">
+    <el-header>
+        <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal">
+            <span class="welcome"><img src="img/logo.png" style=" padding-left: 20px"></span>
+            <span class="user" style="float: right; padding-right:50px ;font-size: 20px ; line-height: 55px">{{User}} | <a href="login.html"><i class="el-icon-switch-button"></i></a></span>
+            <span class="userPhoto" style="float: right"><img src="img/user.png"></span>
+        </el-menu>
+    </el-header>
+    <el-container>
+        <!--侧边-->
+        <el-aside>
+            <el-col>
+                <el-menu
+                        default-active="2"
+                        class="el-menu-vertical-demo">
+                    <el-menu-item index="1" @click=toMain>
+                        <i class="el-icon-user-solid"></i>
+                        <span slot="title">Employee Management</span>
+                    </el-menu-item>
+                    <el-menu-item index="2" @click="toMain_Schedule">
+                        <i class="el-icon-date"></i>
+                        <span slot="title" >Schedule Management</span>
+                    </el-menu-item>
+                    <el-menu-item index="3" @click=toMain_Stock>
+                        <i class="el-icon-s-goods"></i>
+                        <span slot="title">Stock Management</span>
+                    </el-menu-item>
+                    <el-menu-item index="4">
+                        <i class="el-icon-document"></i>
+                        <span slot="title"> Data </span>
+                    </el-menu-item>
+                    <el-menu-item index="5" @click="toMain_ChangePassword_Manager">
+                        <i class="el-icon-setting"></i>
+                        <span slot="title">Change Password</span>
+                    </el-menu-item>
+                </el-menu>
+            </el-col>
+        </el-aside>
+        <!--主页面-->
+        <el-main>
+            <!--搜索栏-->
+            <el-form :inline="true" :model="formInline" class="demo-form-inline">
+                <el-form-item label="Search">
+                    <el-select v-model="formInline.key" placeholder="" >
+                        <el-option label="Name" value="name"></el-option>
+                        <el-option label="Username" value="username"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item >
+                    <el-input v-model="formInline.value" placeholder=""></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="Search">search</el-button>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="Reset">reset</el-button>
+                </el-form-item>
+            </el-form>
+            <!--回收站-->
+
+            <el-badge :value=count class="item">
+                <el-button @click="requestDialogVisible=true">Employee leave management</el-button>
+            </el-badge>
+            <el-dialog
+                    title="Employee leave management"
+                    :visible.sync="requestDialogVisible"
+                    width="50%">
+                <template>
+                    <el-table
+                            :data="request"
+                            style="width: 100%">
+                        <el-table-column
+                                prop="name"
+                                label="Name"
+                                align="center">
+                        </el-table-column>
+                        <el-table-column
+                                prop="daysOff"
+                                label="Days Off"
+                                align="center">
+                        </el-table-column>
+                        <el-table-column
+                                label="operation"
+                                align="center">
+                            <template slot-scope="scope">
+                                <el-button
+                                        size="mini"
+                                        @click="Agree(scope.row)">Agree</el-button>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                label="operation"
+                                align="center">
+                            <template slot-scope="scope">
+                                <el-button
+                                        size="mini"
+                                        type="danger"
+                                        @click="Refuse(scope.row)">Refuse</el-button>
+                            </template>
+                        </el-table-column>
+
+                    </el-table>
+                </template>
+            </el-dialog>
+
+            <!--表格-->
+            <template>
+                <el-table
+                        :data="tableData"
+                        style="width: 100%"
+                        :default-sort = "{prop: 'date', order: 'descending'}"
+                        @selection-change="handleSelectionChange"
+                >
+                    </el-table-column>
+                    <el-table-column
+                            align="center"
+                            type="index"
+                            sortable>
+                    </el-table-column>
+                    <el-table-column
+                            align="center"
+                            prop="name"
+                            label="Name">
+                    </el-table-column>
+                    <el-table-column
+                            align="center"
+                            prop="username"
+                            label="Username">
+                    </el-table-column>
+                    <el-table-column
+                            align="center"
+                            prop="attendance"
+                            label="Attendance"
+                            :filters="[{ text: 'true', value: true }, { text: 'false', value: false }]"
+                            :filter-method="filterTagForAttendance"
+                            filter-placement="bottom-end">
+                        <template slot-scope="scope">
+                            <el-tag
+                                    :type="scope.row.attendance === true ? 'success' :'danger'"
+                                    disable-transitions>{{scope.row.attendance}}</el-tag>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            align="center"
+                            prop="leave"
+                            label="Leave"
+                            :filters="[{ text: 'true', value: true }, { text: 'false', value: false }]"
+                            :filter-method="filterTagForLeave"
+                            filter-placement="bottom-end">
+                        <template slot-scope="scope">
+                            <el-tag
+                                    :type="scope.row.leave === true ? 'success' :'danger'"
+                                    disable-transitions>{{scope.row.leave}}</el-tag>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            align="center"
+                            prop="daysOff"
+                            label="daysOff"
+                            sortable
+                    >
+                    </el-table-column>
+                    <el-table-column label="operation"
+                                     align="center">
+                        <template slot-scope="scope">
+                            <el-button
+                                    size="mini"
+                                    @click="changeStateAttendance(scope.row)">Change Attendance</el-button>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="operation"
+                                     align="center">
+                        <template slot-scope="scope">
+                            <el-button
+                                    size="mini"
+                                    @click="changeStateLeave(scope.row)">Change Leave</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </template>
+
+            <!--分页栏-->
+            <template>
+                <div class="block" align="center">
+                    <el-pagination
+                            @size-change="handleSizeChange"
+                            @current-change="handleCurrentChange"
+                            :current-page="currentPage"
+                            :page-sizes="[5, 10, 15]"
+                            :page-size="pageSize"
+                            layout="total, sizes, prev, pager, next, jumper"
+                            :total="pageCount">
+                    </el-pagination>
+                </div>
+            </template>
+        </el-main>
+    </el-container>
+</div>
+<script src="js/vue.js"></script>
+<script src="js/axios.js"></script>
+<script src="element-ui/lib/index.js"></script>
+<link rel="stylesheet" href="element-ui/lib/theme-chalk/index.css">
+<script src="element-ui/lib/umd/locale/en.js"></script>
+<script>
+    ELEMENT.locale(ELEMENT.lang.en);
+    new Vue({
+        el:"#schedule",
+        mounted(){
+            this.User = this.getCookie("isLogin");
+            this.selectAll();
+            this.selectRequestCount();
+            this.selectRequest();
+        },
+        data() {
+            return {
+                //查询请求数
+                count:0,
+                //查询结果集
+                request:[],
+                //当前用户
+                User: '',
+                //表格
+                tableData:[],
+                //搜索框
+                formInline: {
+                    key:'',
+                    value:''
+                },
+                //弹窗显示
+                requestDialogVisible: false,
+                //分页当前页数
+                currentPage: 1,
+                //总数据数
+                pageCount:0,
+                //查询页数
+                pageSize:5
+            }
+        },
+        methods: {
+            //跳转
+            toMain(){
+                location.href="http://localhost:8080/meitishangcheng-system/Main.html"
+            },
+            toMain_Stock(){
+                location.href="http://localhost:8080/meitishangcheng-system/Main_Stock.html"
+            },
+            toMain_Schedule(){
+                location.href="http://localhost:8080/meitishangcheng-system/Main_Schedule.html"
+            },
+            toMain_ChangePassword_Manager(){
+                location.href="http://localhost:8080/meitishangcheng-system/Main_ChangePassword_Manager.html"
+            },
+            //获取cookie
+            getCookie(name) {
+                var cookieArr = document.cookie.split(";");
+                for (var i = 0; i < cookieArr.length; i++) {
+                    var cookiePair = cookieArr[i].split("=");
+                    if (name == cookiePair[0].trim()) {
+                        return decodeURIComponent(cookiePair[1]);
+                    }
+                }
+                return null;
+            },
+            filterTagForAttendance(value, row) {
+                return row.attendance === value;
+            },
+            filterTagForLeave(value, row) {
+                return row.leave === value;
+            },
+            filterHandler(value, row, column) {
+                const property = column['property'];
+                return row[property] === value;
+            },
+            //成功
+            Success() {
+                this.$message({
+                    showClose: true,
+                    message: 'Success!',
+                    type: 'success'
+                });
+            },
+            //失败
+            Error() {
+                this.$message({
+                    showClose: true,
+                    message: 'error',
+                    type: 'error'
+                });
+            },
+            //同意请假
+            Agree(row){
+                axios({
+                    method:"post",
+                    url:"http://localhost:8080/meitishangcheng-system/scheduleAgreeServlet",
+                    data:row.id
+                }).then(resp=>{
+                    if (resp.data==='success'){
+                        this.selectRequest();
+                        this.selectRequestCount();
+                        this.selectAll();
+                        this.Success();
+                    }else {
+                        this.selectRequest();
+                        this.selectRequestCount();
+                        this.selectAll();
+                        this.Error()
+                    }
+                })
+            },
+            //拒绝请假
+            Refuse(row){
+                axios({
+                    method:"post",
+                    url:"http://localhost:8080/meitishangcheng-system/scheduleRefuseServlet",
+                    data:row.id
+                }).then(resp=>{
+                    if (resp.data==='success'){
+                        this.selectRequest();
+                        this.selectRequestCount();
+                        this.selectAll();
+                        this.Success();
+                    }else {
+                        this.selectRequest();
+                        this.selectRequestCount();
+                        this.selectAll();
+                        this.Error()
+                    }
+                })
+            },
+            //查询所有
+            selectAll(){
+                axios({
+                    method:"post",
+                    url:"http://localhost:8080/meitishangcheng-system/scheduleSelectAllServlet?currentPage="+this.currentPage+"&pageSize="+this.pageSize,
+                    data:this.formInline
+                }).then(resp =>{
+                    this.tableData = resp.data.schedules;
+                    this.pageCount = resp.data.count;
+                })
+            },
+            //查询请求数量
+            selectRequestCount() {
+                axios({
+                    method: "get",
+                    url:"http://localhost:8080/meitishangcheng-system/scheduleRequestCountServlet"
+                }).then(resp=>{
+                    this.count = resp.data
+                })
+            },
+            //查询请求
+            selectRequest() {
+                axios({
+                    method:"get",
+                    url:"http://localhost:8080/meitishangcheng-system/scheduleRequestServlet"
+                }).then(resp=>{
+                    this.request = resp.data
+                })
+            },
+            //改变请假状态
+            changeStateLeave(row){
+                axios({
+                    method:"post",
+                    url:"http://localhost:8080/meitishangcheng-system/scheduleChangeLeaveServlet",
+                    data:row.id
+                }).then(resp=>{
+                    if (resp.data ==='success'){
+                        this.selectAll();
+                        this.Success()
+                    }else {
+                        this.selectAll();
+                        this.Error()
+                    }
+                })
+            },
+            //改变出勤状态
+            changeStateAttendance(row){
+                axios({
+                    method:"post",
+                    url:"http://localhost:8080/meitishangcheng-system/scheduleChangeAttendanceServlet",
+                    data:row.id
+                }).then(resp=>{
+                    if (resp.data ==='success'){
+                        this.selectAll();
+                        this.Success()
+                    }else {
+                        this.selectAll();
+                        this.Error()
+                    }
+                })
+            },
+            //搜索
+            Search() {
+                this.selectAll();
+            },
+            //取消搜索
+            Reset(){
+                this.formInline={};
+                this.selectAll();
+            },
+            //分页
+            handleSizeChange(val) {
+                this.pageSize = val;
+                this.selectAll();
+            },
+            handleCurrentChange(val) {
+                this.currentPage = val;
+                this.selectAll();
+            }
+        }
+    })
+</script>
+
+</body>
+</html>

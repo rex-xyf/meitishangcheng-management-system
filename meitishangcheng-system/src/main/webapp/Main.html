@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Meitishangcheng</title>
+</head>
+<body>
+    <div id="form">
+        <el-header>
+                <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal">
+                    <span class="welcome"><img src="img/logo.png" style=" padding-left: 20px"></span>
+                    <span class="user" style="float: right; padding-right:50px ;font-size: 20px ; line-height: 55px">{{User}} | <a href="login.html"><i class="el-icon-switch-button"></i></a></span>
+                    <span class="userPhoto" style="float: right"><img src="img/user.png"></span>
+                </el-menu>
+        </el-header>
+        <el-container>
+            <!--侧边-->
+            <el-aside>
+                <el-col>
+                    <el-menu
+                            default-active="1"
+                            class="el-menu-vertical-demo">
+                        <el-menu-item index="1" @click="toMain">
+                            <i class="el-icon-user-solid"></i>
+                            <span slot="title">Employee Management</span>
+                        </el-menu-item>
+                        <el-menu-item index="2" @click="toMain_Schedule">
+                            <i class="el-icon-date"></i>
+                            <span slot="title" >Schedule Management</span>
+                        </el-menu-item>
+                        <el-menu-item index="3" @click="toMain_Stock">
+                            <i class="el-icon-s-goods"></i>
+                            <span slot="title">Stock Management</span>
+                        </el-menu-item>
+                        <el-menu-item index="4">
+                            <i class="el-icon-document"></i>
+                            <span slot="title"> Data </span>
+                        </el-menu-item>
+                        <el-menu-item index="5" @click="toMain_ChangePassword_Manager">
+                            <i class="el-icon-setting"></i>
+                            <span slot="title">Change Password</span>
+                        </el-menu-item>
+                    </el-menu>
+                </el-col>
+            </el-aside>
+            <!--主页面-->
+            <el-main>
+        <!--搜索栏-->
+            <el-form :inline="true" :model="formInline" class="demo-form-inline">
+            <el-form-item label="Search">
+                <el-select v-model="formInline.key" placeholder="" >
+                    <el-option label="Name" value="name"></el-option>
+                    <el-option label="Address" value="address"></el-option>
+                    <el-option label="Hour Wages" value="hourWages"></el-option>
+                    <el-option label="Department" value="department"></el-option>
+                    <el-option label="Work Shift" value="workShifts"></el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item >
+                <el-input v-model="formInline.value" placeholder=""></el-input>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" @click="Search">search</el-button>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" @click="Reset">reset</el-button>
+            </el-form-item>
+        </el-form>
+
+        <!--添加删除-->
+            <el-button type="primary"  @click="dialogVisible = true">add</el-button>
+            <el-dialog
+                title="ADD"
+                :visible.sync="dialogVisible"
+                width="25%">
+
+            <el-form ref="form" :model="form" label-width="120px">
+                <el-form-item label="Name">
+                    <el-input v-model="form.name"></el-input>
+                </el-form-item>
+                <el-form-item label="Address">
+                    <el-input v-model="form.address"></el-input>
+                </el-form-item>
+                <el-form-item label="Hour Wages">
+                    <el-input v-model="form.hourWages"></el-input>
+                </el-form-item>
+                <el-form-item label="Department">
+                    <el-select v-model="form.department" placeholder="Department">
+                        <el-option v-for="item in departForm" :value="item.value" :key="item.value"
+                                   :label="item.text"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="WorkShifts">
+                    <el-switch v-model="display">
+                    </el-switch>
+                </el-form-item>
+                <el-form-item v-show="display">
+                    <el-select v-model="form.workShifts" placeholder="Work Shifts">
+                        <el-option label="morning" value="morning"></el-option>
+                        <el-option label="afternoon" value="afternoon"></el-option>
+                        <el-option label="evening" value="evening"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item >
+                    <el-alert
+                            title="The system will automatically assign the workShifts.You can also enter it manually"
+                            type="info"
+                            show-icon>
+                    </el-alert>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="ADD">add</el-button>
+                    <el-button @click="dialogVisible = false">cancel</el-button>
+                </el-form-item>
+            </el-form>
+        </el-dialog>
+
+            <el-button type="danger"  @click="deleteAll" >delete</el-button>
+
+        <!--部门管理-->
+                <el-button @click="departmentDialogVisible = true">Add Department</el-button>
+                <el-dialog
+                        title="Add Department"
+                        :visible.sync="departmentDialogVisible"
+                        width="25%">
+
+                    <el-form ref="form" :model="addForm" label-width="120px">
+                        <el-form-item label="Department">
+                            <el-input v-model="addForm.depart"></el-input>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-button type="primary" @click="addDepartment">add</el-button>
+                            <el-button @click="departmentDialogVisible = false">cancel</el-button>
+                        </el-form-item>
+                    </el-form>
+                </el-dialog>
+
+                <!--回收站-->
+                <el-badge :value=recoverCount class="item">
+                    <el-button @click="deleteDialogVisible=true">Recycle Bin</el-button>
+                </el-badge>
+                <el-dialog
+                        title="Recycle Bin"
+                        :visible.sync="deleteDialogVisible"
+                        width="70%">
+                    <template>
+                        <el-table
+                                :data="deleteData"
+                                style="width: 100%">
+                            <el-table-column
+                                    prop="name"
+                                    label="Name"
+                                    align="center">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="address"
+                                    label="Address"
+                                    align="center">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="hourWages"
+                                    label="hour Wages"
+                                    align="center">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="department"
+                                    label="Department"
+                                    align="center">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="workShifts"
+                                    label="Work Shifts"
+                                    align="center">
+                            </el-table-column>
+                            <el-table-column
+                                    label="operation"
+                                    align="center">
+                                <template slot-scope="scope">
+                                <el-button
+                                        size="mini"
+                                        @click="binRecover(scope.row)">Recover</el-button>
+                                </template>
+                            </el-table-column>
+                            <el-table-column
+                                    label="operation"
+                                    align="center">
+                                <template slot-scope="scope">
+                                <el-button
+                                        size="mini"
+                                        type="danger"
+                                        @click="binDelete(scope.row)">Delete</el-button>
+                                </template>
+                            </el-table-column>
+
+                        </el-table>
+                    </template>
+                </el-dialog>
+                <span style="padding-left: 20px"></span>
+
+                <!--修改个人资料请求-->
+                <el-badge :value=requestCount class="item">
+                    <el-button @click="modifyDialogVisible=true">Information Request</el-button>
+                </el-badge>
+                <el-dialog
+                        title="Information Request"
+                        :visible.sync="modifyDialogVisible"
+                        width="70%">
+                    <template >
+                        <el-table
+                                :data="modifyData"
+                                style="width: 100%">
+                            <el-table-column
+                                    prop="name"
+                                    label="Name"
+                                    align="center">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="address"
+                                    label="Address"
+                                    align="center">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="hourWages"
+                                    label="hour Wages"
+                                    align="center">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="department"
+                                    label="Department"
+                                    align="center">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="workShifts"
+                                    label="Work Shifts"
+                                    align="center">
+                            </el-table-column>
+                            <el-table-column
+                                    label="operation"
+                                    align="center"
+                                    >
+                                <template slot-scope="scope">
+                                <el-button
+                                        size="mini"
+                                        @click="modifyAgree(scope.row)">Agree</el-button>
+                                </template>
+                            </el-table-column>
+                            <el-table-column
+                                    label="operation"
+                                    align="center">
+                                <template slot-scope="scope">
+                                <el-button
+                                        size="mini"
+                                        type="danger"
+                                        @click="modifyDelete(scope.row)">Refuse</el-button>
+                                </template>
+                            </el-table-column>
+
+                        </el-table>
+                    </template>
+                </el-dialog>
+        <!--表格-->
+            <template>
+            <el-table
+                    :data="tableData"
+                    style="width: 100%"
+                    :default-sort = "{prop: 'date', order: 'descending'}"
+                    @selection-change="handleSelectionChange"
+            >
+                <el-table-column
+                        align="center"
+                        type="selection"
+                        >
+                </el-table-column>
+                <el-table-column
+                        align="center"
+                        type="index"
+                        sortable>
+                </el-table-column>
+                <el-table-column
+                        align="center"
+                        prop="name"
+                        label="Name">
+                </el-table-column>
+                <el-table-column
+                        align="center"
+                        prop="address"
+                        label="Address"
+                        :formatter="formatter">
+                </el-table-column>
+                <el-table-column
+                        align="center"
+                        prop="hourWages"
+                        label="Hour Wages"
+                        sortable>
+                </el-table-column>
+                <el-table-column
+                        align="center"
+                        prop="department"
+                        label="Department"
+                        :filters="departForm"
+                        :filter-method="filterHandler"
+                >
+                </el-table-column>
+                <el-table-column
+                        align="center"
+                        prop="workShifts"
+                        label="Work Shifts"
+                        :filters="[{ text: 'morning', value: 'morning' }, { text: 'afternoon', value: 'afternoon' },{ text: 'evening', value: 'evening' }]"
+                        :filter-method="filterTag"
+                        filter-placement="bottom-end">
+                    <template slot-scope="scope">
+                        <el-tag
+                                :type="scope.row.workShifts === 'morning' ? 'success' : scope.row.workShifts === 'afternoon' ? 'warning' : scope.row.workShifts === 'evening' ? 'primary' : 'danger'"
+                                disable-transitions>{{scope.row.workShifts}}</el-tag>
+                    </template>
+                </el-table-column>
+                <el-table-column label="operation"
+                                 align="center">
+                    <template slot-scope="scope">
+                        <el-button
+                                size="mini"
+                                @click="handleEdit(scope.$index, scope.row)">edit</el-button>
+                        <el-button
+                                size="mini"
+                                type="danger"
+                                @click="handleDelete(scope.$index, scope.row)">delete</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </template>
+
+        <!--修改页面-->
+            <el-dialog
+                title="EDIT"
+                :visible.sync="editDialogVisible"
+                width="25%">
+
+            <el-form ref="form" :model="updateForm" label-width="120px">
+                <el-form-item label="name">
+                    <el-input v-model="updateForm.name"></el-input>
+                </el-form-item>
+                <el-form-item label="Address">
+                    <el-input v-model="updateForm.address"></el-input>
+                </el-form-item>
+                <el-form-item label="Hour Wages">
+                    <el-input v-model="updateForm.hourWages"></el-input>
+                </el-form-item>
+                <el-form-item label="Department">
+                    <el-select v-model="updateForm.department">
+                        <el-option v-for="item in departForm" :value="item.value" :key="item.value"
+                                   :label="item.text"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="Work Shifts">
+                    <el-select v-model="updateForm.workShifts">
+                        <el-option label="morning" value="morning"></el-option>
+                        <el-option label="afternoon" value="afternoon"></el-option>
+                        <el-option label="evening" value="evening"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="update">update</el-button>
+                    <el-button @click="editDialogVisible = false">cancel</el-button>
+                </el-form-item>
+            </el-form>
+        </el-dialog>
+
+        <!--分页栏-->
+            <template>
+        <div class="block" align="center">
+            <el-pagination
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange"
+                    :current-page="currentPage"
+                    :page-sizes="[5, 10, 15]"
+                    :page-size="pageSize"
+                    layout="total, sizes, prev, pager, next, jumper"
+                    :total="pageCount">
+            </el-pagination>
+        </div>
+        </template>
+            </el-main>
+        </el-container>
+    </div>
+    <script src="js/vue.js"></script>
+    <script src="js/axios.js"></script>
+    <script src="element-ui/lib/index.js"></script>
+    <link rel="stylesheet" href="element-ui/lib/theme-chalk/index.css">
+    <script src="element-ui/lib/umd/locale/en.js"></script>
+    <script>
+        ELEMENT.locale(ELEMENT.lang.en);
+        new Vue({
+            el:"#form",
+            mounted(){
+                this.User = this.getCookie("isLogin");
+                this.selectAll();
+                this.selectDepartment();
+                this.selectRecoverCount();
+                this.selectDelete();
+                this.modifySelect();
+                this.modifyCount();
+            },
+            data() {
+                return {
+                    //当前用户
+                    User: '',
+                    //表格
+                    tableData:[],
+                    //搜索框
+                    formInline: {
+                        key:'',
+                        value:''
+                    },
+                    //复选框
+                    multipleSelection: [],
+                    //复选框选择id
+                    selectId:[],
+                    //对话框
+                    dialogVisible: false,
+                    editDialogVisible:false,
+                    departmentDialogVisible:false,
+                    deleteDialogVisible:false,
+                    modifyDialogVisible:false,
+                    //对话框表单信息
+                    form: {
+                        id:'',
+                        name: '',
+                        address:'',
+                        hourWages:'',
+                        department:'',
+                        workShifts:''
+                    },
+                    updateForm:{
+                        id:'',
+                        name: '',
+                        address:'',
+                        department:'',
+                        hourWages:'',
+                        workShifts:''
+                    },
+                    //回收站信息
+                    deleteData:[],
+                    //员工修改请求信息
+                    modifyData:[],
+                    //添加部门
+                    addForm:{
+                      depart:''
+                    },
+                    //部门信息
+                    departForm:[],
+                    //自动化
+                    display:false,
+                    //分页当前页数
+                    currentPage: 1,
+                    //总数据数
+                    pageCount:0,
+                    //查询页数
+                    pageSize:5,
+                    //回收站数量
+                    recoverCount:0,
+                    //请求数量
+                    requestCount:0
+                }
+            },
+            methods: {
+                //跳转
+                toMain(){
+                    location.href="http://localhost:8080/meitishangcheng-system/Main.html"
+                },
+                toMain_Stock(){
+                    location.href="http://localhost:8080/meitishangcheng-system/Main_Stock.html"
+                },
+                toMain_Schedule(){
+                    location.href="http://localhost:8080/meitishangcheng-system/Main_Schedule.html"
+                },
+                toMain_ChangePassword_Manager(){
+                    location.href="http://localhost:8080/meitishangcheng-system/Main_ChangePassword_Manager.html"
+                },
+                //获取cookie
+                getCookie(name) {
+                    var cookieArr = document.cookie.split(";");
+                    for (var i = 0; i < cookieArr.length; i++) {
+                        var cookiePair = cookieArr[i].split("=");
+                        if (name == cookiePair[0].trim()) {
+                            return decodeURIComponent(cookiePair[1]);
+                        }
+                    }
+                    return null;
+                },
+                formatter(row, column) {
+                    return row.address;
+                },
+                filterTag(value, row) {
+                    return row.workShifts === value;
+                },
+                filterHandler(value, row, column) {
+                    const property = column['property'];
+                    return row[property] === value;
+                },
+                //复选框
+                handleSelectionChange(val) {
+                    this.multipleSelection = val;
+                },
+                //成功
+                Success() {
+                    this.$message({
+                        showClose: true,
+                        message: 'Success!',
+                        type: 'success'
+                    });
+                },
+                //失败
+                Error() {
+                    this.$message({
+                        showClose: true,
+                        message: 'error',
+                        type: 'error'
+                    });
+                },
+                //搜索回收站信息
+                selectDelete(){
+                  axios({
+                      method:"get",
+                      url:"http://localhost:8080/meitishangcheng-system/deleteSelectAllServlet"
+                  }).then(resp=>{
+                      this.deleteData = resp.data
+                  })
+                },
+                //回收站数量
+                selectRecoverCount(){
+                    axios({
+                        method:"get",
+                        url:"http://localhost:8080/meitishangcheng-system/deleteCountServlet"
+                    }).then(resp=>{
+                        this.recoverCount=resp.data
+                    })
+                },
+                //回收站恢复
+                binRecover(row) {
+                        var _this = this;
+                        axios({
+                            method:"post",
+                            url:"http://localhost:8080/meitishangcheng-system/recoverServlet",
+                            data: row.id
+                        }).then(function (resp){
+                            if (resp.data === "success"){
+                                _this.selectAll();
+                                _this.selectRecoverCount();
+                                _this.selectDelete();
+                                _this.Success();
+                            }else {
+                                _this.selectAll();
+                                _this.selectRecoverCount();
+                                _this.selectDelete();
+                                _this.Error();
+                            }
+                        })
+                },
+                //回收站删除
+                binDelete(row) {
+                    this.$confirm('This operation will permanently delete the file. Do you want to continue?', 'Tips', {
+                        confirmButtonText: 'confirm',
+                        cancelButtonText: 'cancel',
+                        type: 'warning'
+                    }).then(() => {
+                        var _this = this;
+                        axios({
+                            method:"post",
+                            url:"http://localhost:8080/meitishangcheng-system/deleteServlet",
+                            data: row.id
+                        }).then(function (resp){
+                            if (resp.data === "success"){
+                                _this.selectAll();
+                                _this.selectDelete();
+                                _this.selectRecoverCount();
+                                _this.Success();
+                            }else {
+                                _this.selectAll();
+                                _this.selectDelete();
+                                _this.selectRecoverCount();
+                                _this.Error();
+                            }
+                        })
+                    }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: 'Deletion cancelled'
+                        });
+                    });
+                },
+                //搜索请求
+                modifySelect(){
+                    axios({
+                        method:"get",
+                        url:"http://localhost:8080/meitishangcheng-system/modifySelectAllServlet"
+                    }).then(resp=>{
+                        this.modifyData = resp.data
+                    })
+                },
+                //请求数量
+                modifyCount(){
+                    axios({
+                        method:"get",
+                        url:"http://localhost:8080/meitishangcheng-system/modifyCountServlet"
+                    }).then(resp=>{
+                        this.requestCount=resp.data
+                    })
+                },
+                //同意请求
+                modifyAgree(row) {
+                    var _this = this;
+                    axios({
+                        method:"post",
+                        url:"http://localhost:8080/meitishangcheng-system/agreeServlet",
+                        data: row.id
+                    }).then(function (resp){
+                        if (resp.data === "success"){
+                            _this.selectAll();
+                            _this.modifySelect();
+                            _this.modifyCount();
+                            _this.Success();
+                        }else {
+                            _this.selectAll();
+                            _this.modifySelect();
+                            _this.modifyCount();
+                            _this.Error();
+                        }
+                    })
+                },
+                //拒绝员工请求
+                modifyDelete(row) {
+                        var _this = this;
+                        axios({
+                            method:"post",
+                            url:"http://localhost:8080/meitishangcheng-system/deleteServlet",
+                            data: row.id
+                        }).then(function (resp){
+                            if (resp.data === "success"){
+                                _this.selectAll();
+                                _this.modifySelect();
+                                _this.modifyCount();
+                                _this.Success();
+                            }else {
+                                _this.selectAll();
+                                _this.modifySelect();
+                                _this.modifyCount();
+                                _this.Error();
+                            }
+                        })
+                },
+                //查询所有
+                selectAll(){
+                    axios({
+                        method:"post",
+                        url:"http://localhost:8080/meitishangcheng-system/employeeSelectAllServlet?currentPage="+this.currentPage+"&pageSize="+this.pageSize,
+                        data:this.formInline
+                    }).then(resp =>{
+                        this.tableData = resp.data.employees;
+                        this.pageCount = resp.data.count;
+                    })
+                },
+                //查询部门
+                selectDepartment(){
+                    axios({
+                        method:"get",
+                        url:"http://localhost:8080/meitishangcheng-system/departmentSelectAllServlet"
+                    }).then(resp =>{
+                        this.departForm = resp.data
+                    })
+                },
+                //添加部门
+                addDepartment(){
+                    axios({
+                        method:"post",
+                        url:"http://localhost:8080/meitishangcheng-system/departmentAddServlet",
+                        data:this.addForm.depart
+                    }).then(resp=>{
+                        if (resp.data === 'success'){
+                            this.Success();
+                            this.selectAll();
+                            this.selectDepartment();
+                            this.departmentDialogVisible = false
+                        }else {
+                            this.Error()
+                        }
+                    })
+                },
+                //修改
+                handleEdit(index, row) {
+                    var _this = this;
+                    axios({
+                        method:"post",
+                        url:"http://localhost:8080/meitishangcheng-system/employeeSelectByIdServlet",
+                        data: row.id
+                    }).then(function (resp){
+                        _this.updateForm = resp.data;
+                        _this.editDialogVisible = true;
+                    })
+                },
+                //页面修改
+                update(){
+                    var _this = this;
+                    axios({
+                        method:"post",
+                        url:"http://localhost:8080/meitishangcheng-system/employeeUpdateServlet",
+                        data: _this.updateForm
+                    }).then(function (resp){
+                        if (resp.data === "success"){
+                            _this.editDialogVisible = false;
+                            _this.selectAll();
+                            _this.Success();
+                            _this.updateForm = {};
+                        }else {
+                            _this.selectAll();
+                            _this.Error();
+                        }
+                    })
+                },
+                //删除
+                handleDelete(index, row) {
+                    this.$confirm('This operation will permanently delete the file. Do you want to continue?', 'Tips', {
+                        confirmButtonText: 'confirm',
+                        cancelButtonText: 'cancel',
+                        type: 'warning'
+                    }).then(() => {
+                        var _this = this;
+                        axios({
+                            method:"post",
+                            url:"http://localhost:8080/meitishangcheng-system/employeeDeleteServlet",
+                            data: row.id
+                        }).then(function (resp){
+                            if (resp.data === "success"){
+                                _this.selectAll();
+                                _this.selectRecoverCount();
+                                _this.selectDelete();
+                                _this.Success();
+                            }else {
+                                _this.selectAll();
+                                _this.selectRecoverCount();
+                                _this.selectDelete();
+                                _this.Error();
+                            }
+                        })
+                    }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: 'Deletion cancelled'
+                        });
+                    });
+                },
+                //搜索
+                Search() {
+                    this.selectAll();
+                },
+                //取消搜索
+                Reset(){
+                    this.formInline={};
+                    this.selectAll();
+                },
+                //删除全部
+                deleteAll(){
+                        this.$confirm('This operation will permanently delete the file. Do you want to continue?', 'Tips', {
+                            confirmButtonText: 'confirm',
+                            cancelButtonText: 'cancel',
+                            type: 'warning'
+                        }).then(() => {
+                            for (let i = 0; i <this.multipleSelection.length; i++) {
+                                this.selectId[i] = this.multipleSelection[i].id
+                            }
+                            var _this = this;
+                            axios({
+                                method:"post",
+                                url:"http://localhost:8080/meitishangcheng-system/employeeDeleteByIdsServlet",
+                                data: _this.selectId
+                            }).then(function (resp){
+                                if (resp.data === "success") {
+                                    _this.selectAll();
+                                    _this.selectRecoverCount();
+                                    _this.selectDelete();
+                                    _this.$message({
+                                        type: 'success',
+                                        message: 'Deletion succeeded!'
+                                    });
+
+                                }else {
+                                    _this.selectRecoverCount();
+                                    _this.selectDelete();
+                                    _this.$message({
+                                        type: 'error',
+                                        message: 'Deletion error!'
+                                    });
+                                }
+                            })
+                        }).catch(() => {
+                            this.$message({
+                                type: 'info',
+                                message: 'Deletion cancelled'
+                            });
+                        });
+                },
+                //对话框表单添加
+                ADD() {
+                    var _this = this;
+                    axios({
+                        method: "post",
+                        url: "http://localhost:8080/meitishangcheng-system/employeeAddServlet",
+                        data: _this.form
+                    }).then(function (resp) {
+                        if (resp.data === "success"){
+                            _this.dialogVisible = false;
+                            _this.selectAll();
+                            _this.Success();
+                            _this.form = {}
+                        }else {
+                            _this.selectAll();
+                            _this.Error();
+                        }
+                    })
+                },
+                //分页
+                handleSizeChange(val) {
+                    this.pageSize = val;
+                    this.selectAll();
+                },
+                handleCurrentChange(val) {
+                    this.currentPage = val;
+                    this.selectAll();
+                }
+            }
+        })
+    </script>
+
+</body>
+</html>

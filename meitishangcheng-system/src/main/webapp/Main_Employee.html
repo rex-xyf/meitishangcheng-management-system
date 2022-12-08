@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Meitishangcheng</title>
+</head>
+<body>
+<div id="form">
+    <el-header>
+        <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal">
+            <span class="welcome"><img src="img/logo.png" style=" padding-left: 20px"></span>
+            <span class="user" style="float: right; padding-right:50px ;font-size: 20px ; line-height: 55px">{{User}} | <a href="login.html"><i class="el-icon-switch-button"></i></a></span>
+            <span class="userPhoto" style="float: right"><img src="img/user.png"></span>
+        </el-menu>
+    </el-header>
+    <el-container>
+        <!--侧边-->
+        <el-aside>
+            <el-col>
+                <el-menu
+                        default-active="1"
+                        class="el-menu-vertical-demo">
+                    <el-menu-item index="1" @click="toMain_Employee">
+                        <i class="el-icon-user-solid"></i>
+                        <span slot="title">Personal Information</span>
+                    </el-menu-item>
+                    <el-menu-item index="2" @click="toMain_Employee_Schedule">
+                        <i class="el-icon-date"></i>
+                        <span slot="title" >Daily Schedule</span>
+                    </el-menu-item>
+                    <el-menu-item index="3" @click="toMain_Stock_Employee" :disabled="Manager2">
+                        <i class="el-icon-s-goods"></i>
+                        <span slot="title">Stock Management</span>
+                    </el-menu-item>
+                    <el-menu-item index="4" @click="toMain_ChangePassword_Employee">
+                        <i class="el-icon-setting"></i>
+                        <span slot="title">Change Password</span>
+                    </el-menu-item>
+                </el-menu>
+            </el-col>
+        </el-aside>
+        <!--主页面-->
+        <el-main>
+            <!--个人信息表-->
+            <el-descriptions title="Personal Information Form" direction="vertical" :column="4" border >
+                <el-descriptions-item label="Name">{{form.name}}</el-descriptions-item>
+                <el-descriptions-item label="Username">{{User}}</el-descriptions-item>
+                <el-descriptions-item label="Email" >{{email}}</el-descriptions-item>
+                <el-descriptions-item label="Work Shift" :span="2">{{form.workShifts}}</el-descriptions-item>
+                <el-descriptions-item label="Hour Wages">{{form.hourWages}}</el-descriptions-item>
+                <el-descriptions-item label="Department">
+                    <el-tag>{{form.department}}</el-tag>
+                </el-descriptions-item>
+                <el-descriptions-item label="Address">{{form.address}}</el-descriptions-item>
+            </el-descriptions>
+
+            <!--修改信息-->
+            <div style="text-align: center; padding-top: 30px">
+            <el-button type="primary"  @click="dialogVisible = true" style="width: 250px">Modify Personal Information</el-button>
+            </div>
+
+
+            <el-dialog
+                    title="Modify Personal Information"
+                    :visible.sync="dialogVisible"
+                    width="25%"
+            >
+
+                <el-form ref="form" :model="updateForm" label-width="120px">
+                    <el-form-item label="Name">
+                        <el-input v-model="updateForm.name"></el-input>
+                    </el-form-item>
+                    <el-form-item label="Address">
+                        <el-input v-model="updateForm.address"></el-input>
+                    </el-form-item>
+                    <el-form-item label="Hour Wages">
+                        <el-input v-model="updateForm.hourWages"></el-input>
+                    </el-form-item>
+                    <el-form-item label="Department">
+                        <el-select v-model="updateForm.department" placeholder="Department">
+                            <el-option v-for="item in departForm" :value="item.value" :key="item.value"
+                                       :label="item.text"></el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="WorkShifts">
+                        <el-select v-model="updateForm.workShifts" placeholder="Work Shifts">
+                            <el-option label="morning" value="morning"></el-option>
+                            <el-option label="afternoon" value="afternoon"></el-option>
+                            <el-option label="evening" value="evening"></el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" @click="updateInformation">edit</el-button>
+                        <el-button @click="dialogVisible = false">cancel</el-button>
+                    </el-form-item>
+                </el-form>
+            </el-dialog>
+
+        </el-main>
+    </el-container>
+</div>
+<script src="js/vue.js"></script>
+<script src="js/axios.js"></script>
+<script src="element-ui/lib/index.js"></script>
+<link rel="stylesheet" href="element-ui/lib/theme-chalk/index.css">
+<script src="element-ui/lib/umd/locale/en.js"></script>
+<script>
+    ELEMENT.locale(ELEMENT.lang.en);
+    new Vue({
+        el:"#form",
+        mounted(){
+            this.User = this.getCookie("isLogin");
+            this.selectStock()
+            this.email = this.getCookie("loginEmail")
+            this.selectAll()
+            this.selectDepartment();
+        },
+        data() {
+            return {
+                //部门信息
+                departForm:[],
+                //是否为商场管理
+                Manager2:true,
+                //邮箱
+                email:'',
+                //当前用户
+                User: '',
+                //对话框
+                dialogVisible: false,
+                editDialogVisible:false,
+                //对话框表单信息
+                form: {
+                    id:'',
+                    name: '',
+                    address:'',
+                    hourWages:'',
+                    department:'',
+                    workShifts:''
+                },
+                updateForm:{
+                    id:'',
+                    name: '',
+                    address:'',
+                    hourWages:'',
+                    department:'',
+                    workShifts:''
+                }
+            }
+        },
+        methods: {
+            selectStock(){
+                axios({
+                    method:"post",
+                    url:"http://localhost:8080/meitishangcheng-system/userSelectStock",
+                    data:this.User
+                }).then(resp =>{
+                    if (resp.data === 'yes'){
+                        this.Manager2 = false
+                    }
+                })
+            },
+            toMain_ChangePassword_Employee(){
+                location.href="http://localhost:8080/meitishangcheng-system/Main_ChangePassword_Employee.html"
+            },
+            toMain_Stock_Employee(){
+                location.href="http://localhost:8080/meitishangcheng-system/Main_Stock_Employee.html"
+            },
+            toMain_Employee_Schedule(){
+                location.href="http://localhost:8080/meitishangcheng-system/Main_Employee_Schedule.html"
+            },
+            toMain_Employee(){
+                location.href="http://localhost:8080/meitishangcheng-system/Main_Employee.html"
+            },
+            //获取cookie
+            getCookie(name) {
+                var cookieArr = document.cookie.split(";");
+                for (var i = 0; i < cookieArr.length; i++) {
+                    var cookiePair = cookieArr[i].split("=");
+                    if (name == cookiePair[0].trim()) {
+                        return decodeURIComponent(cookiePair[1]);
+                    }
+                }
+                return null;
+            },
+            //查询部门
+            selectDepartment(){
+                axios({
+                    method:"get",
+                    url:"http://localhost:8080/meitishangcheng-system/departmentSelectAllServlet"
+                }).then(resp =>{
+                    this.departForm = resp.data
+                })
+            },
+            //成功
+            Success() {
+                this.$message({
+                    showClose: true,
+                    message: 'Success!',
+                    type: 'success'
+                });
+            },
+            //失败
+            Error() {
+                this.$message({
+                    showClose: true,
+                    message: 'error',
+                    type: 'error'
+                });
+            },
+            //查询所有
+            selectAll(){
+                axios({
+                    method:"post",
+                    url:"http://localhost:8080/meitishangcheng-system/selectByNameServlet",
+                    data:this.User
+                }).then(resp =>{
+                    this.form = resp.data.employee
+                    this.email = resp.data.email
+                })
+            },
+            //对话框表单修改
+            updateInformation() {
+                axios({
+                    method: "post",
+                    url: "http://localhost:8080/meitishangcheng-system/updateServlet?User="+this.User,
+                    data: this.updateForm
+                }).then(resp => {
+                    if (resp.data === "success"){
+                        this.selectAll();
+                        this.dialogVisible = false;
+                        this.Success();
+                    }else {
+                        this.selectAll()
+                        this.Error();
+                    }
+                })
+            }
+        }
+    })
+</script>
+
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>reset</title>
+    <link rel="stylesheet" href="css/styleForSign.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" charset="utf-8"></script>
+    <script src="js/vue.js"></script>
+    <script src="js/axios.js"></script>
+    <script src="element-ui/lib/index.js"></script>
+    <link rel="stylesheet" href="element-ui/lib/theme-chalk/index.css">
+</head>
+<body>
+<div id="findPage">
+<form action="#" class="login-form" id="forget" v-loading="loading">
+    <h1>Reset Password</h1>
+    <div class="txt">
+        <el-tooltip placement="bottom" effect="light">
+            <div slot="content">The password is required to be 6-12 characters<br/>and can only be letters, numbers and underscores</div>
+            <input type="password" name="password" v-model="password" oninput="this.value=this.value.replace(/[^\w_]/g,'');" maxlength="12" >
+        </el-tooltip>
+        <span data-placeholder="Password"></span>
+    </div>
+
+    <div class="txt">
+        <el-tooltip placement="bottom" effect="light">
+            <div slot="content">The password is required to be 6-12 characters<br/>and can only be letters, numbers and underscores</div>
+            <input type="password" name="confirmPassword" v-model="confirmPassword" oninput="this.value=this.value.replace(/[^\w_]/g,'');" maxlength="12" >
+        </el-tooltip>
+        <span data-placeholder="Confirm Password"></span>
+    </div>
+
+    <input type="button" class="signup" value="Send" @click=reset>
+
+    <div class="bottom-text">
+        Already Reset? <a href="login.html">Login</a>
+    </div>
+
+</form>
+</div>
+</body>
+<script>
+    new Vue({
+        el:"#findPage",
+        mounted(){
+            var code = location.search;
+            code=code.slice(code.indexOf("=")+1)
+            var cookie = this.getCookie("checkCode");
+            if (code !== cookie) {
+                this.loading = true
+            }
+        },
+        data(){
+            return{
+                password:'',
+                confirmPassword:'',
+                loading:false
+            }
+        },
+        methods:{
+            getCookie(name) {
+                var cookieArr = document.cookie.split(";");
+                for (var i = 0; i < cookieArr.length; i++) {
+                    var cookiePair = cookieArr[i].split("=");
+                    if (name == cookiePair[0].trim()) {
+                        return decodeURIComponent(cookiePair[1]);
+                    }
+                }
+                return null;
+            },
+            resetSuccess() {
+                this.$message({
+                    message: ' The password has been reset, please return to login',
+                    type: 'success'
+                });
+            },
+            resetError(){
+                this.$message.error('The passwords entered twice are inconsistent');
+            },
+            resetError1(){
+                this.$message.error('unknown error');
+            },
+            resetError2(){
+                this.$notify.error({
+                    title: 'error',
+                    message: 'Password does not conform to the format'
+                });
+            },
+            PasswordNotFound() {
+                this.$notify({
+                    title: 'warning',
+                    message: 'Please input a password',
+                    type: 'warning'
+                });
+            },
+            reset(){
+                var code = /^[\w]{6,12}$/;
+                if (this.password === ''){
+                    this.PasswordNotFound();
+                }else if (this.confirmPassword ==='') {
+                    this.PasswordNotFound();
+                }else if (code.test(this.password) === false) {
+                    this.resetError2();
+                }else if (code.test(this.confirmPassword) === false){
+                    this.resetError2()
+                }else if (this.password !== this.confirmPassword){
+                    this.resetError();
+                }else {
+                    axios({
+                        method:"post",
+                        url:"http://localhost:8080/meitishangcheng-system/userChangePassword",
+                        data:this.password
+                    }).then(resp =>{
+                        if (resp.data ==='success'){
+                            this.resetSuccess()
+                        }else {
+                            this.resetError1()
+                        }
+                    })
+                }
+            }
+        }
+    })
+
+</script>
+
+
+<script type="text/javascript">
+    $(".txt input").on("focus", function(){
+        $(this).addClass("focus");
+    });
+
+    $(".txt input").on("blur", function(){
+        if($(this).val() == "")
+            $(this).removeClass("focus");
+    });
+
+</script>
+
+</html>

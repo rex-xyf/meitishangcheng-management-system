@@ -1,0 +1,279 @@
+
+  <!--Created by IntelliJ IDEA.
+  User: v
+  Date: 2022/10/10
+  Time: 12:09
+  To change this template use File | Settings | File Templates.-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>register</title>
+    <link rel="stylesheet" href="css/styleForSign.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" charset="utf-8"></script>
+    <script src="js/vue.js"></script>
+    <script src="js/axios.js"></script>
+    <script src="element-ui/lib/index.js"></script>
+    <link rel="stylesheet" href="element-ui/lib/theme-chalk/index.css">
+</head>
+<body>
+<div id="register">
+<form action="#" class="login-form" >
+    <h1>Sign Up</h1>
+
+
+    <div class="txt">
+        <el-tooltip placement="bottom" effect="light">
+            <div slot="content">The username is required to be 6-12 characters<br/>and can only be letters, numbers and underscores</div>
+            <input type="text" name="username" v-model="Manager.username" @blur=checkUsername oninput="this.value=this.value.replace(/[^\w_]/g,'');" maxlength="12" >
+        </el-tooltip>
+        <span data-placeholder="Username"></span>
+    </div>
+
+    <div class="txt">
+        <el-tooltip  placement="bottom" effect="light">
+            <div slot="content">The password is required to be 6-12 characters<br/>and can only be letters, numbers and underscores</div>
+            <input type="password" name="password" v-model="Manager.password" oninput="this.value=this.value.replace(/[^\w_]/g,'');" maxlength="12" >
+        </el-tooltip>
+        <span data-placeholder="Password"></span>
+    </div>
+
+    <div class="txt">
+        <input type="text" name="email" v-model="Manager.email" @blur=checkEmail >
+        <span data-placeholder="E-mail"></span>
+    </div>
+
+    <div class="txt" >
+        <input type="text" name="code" maxlength="5" v-model="verificationCode">
+        <span data-placeholder="Verification Code"></span>
+    </div>
+
+    <div class="check">
+        <span class="remember"> As administrator</span><input v-model="power" type="checkbox"  id="remember" name="remember" value="true" checked>
+    </div>
+
+    <input type="button" class="signup" value="Get verification code" id="code" @click=submitCode>
+    <input type="button" class="signup" value="Sign up" @click=register>
+
+    <div class="bottom-text">
+        Have an account? <a href="login.html">Login</a>
+    </div>
+
+</form>
+</div>
+</body>
+<script>
+    new Vue({
+        el:"#register",
+        data(){
+            return{
+                Manager:{
+                   username:'',
+                   password:'',
+                   email:''
+                } ,
+                power:false,
+                code:'',
+                verificationCode:'',
+                isUsernameExist: false,
+                isEmailExist: false,
+                send: false
+            }
+        },
+        methods:{
+            sendSuccess() {
+                this.$message({
+                    message: 'Email verification code has been sent',
+                    type: 'success'
+                });
+            },
+            registerSuccess() {
+                this.$message({
+                    message: 'Registration succeeded, please return to login',
+                    type: 'success'
+                });
+            },
+            sendError(){
+                this.$message.error('unknown error');
+            },
+            codeError(){
+                this.$message.error('Verification code error');
+            },
+            openError1() {
+                this.$notify.error({
+                    title: 'error',
+                    message: 'Username already exists'
+                });
+            },
+            openError2(){
+                this.$notify.error({
+                    title: 'error',
+                    message: 'Email has been used for registration'
+                });
+            },
+            openError3() {
+                this.$notify({
+                    title: 'warning',
+                    message: 'Please input a username',
+                    type: 'warning'
+                });
+            },
+            openError4() {
+                this.$notify({
+                    title: 'warning',
+                    message: 'Please input a password',
+                    type: 'warning'
+                });
+            },
+            openError5() {
+                this.$notify({
+                    title: 'warning',
+                    message: 'Please input a Email',
+                    type: 'warning'
+                });
+            },
+            openError6(){
+                this.$notify.error({
+                    title: 'error',
+                    message: 'Username does not conform to the format'
+                });
+            },
+            openError7(){
+                this.$notify.error({
+                    title: 'error',
+                    message: 'Password does not conform to the format'
+                });
+            },
+            openError8(){
+                this.$notify.error({
+                    title: 'error',
+                    message: 'Email does not conform to the format'
+                });
+            },
+            openError9(){
+                this.$notify.error({
+                    title: 'error',
+                    message: 'Please enter the verification code'
+                });
+            },
+            checkUsername() {
+                axios({
+                    method:"post",
+                    url:"http://localhost:8080/meitishangcheng-system/userCheckUsername",
+                    data:this.Manager.username
+                }).then(resp => {
+                     if (resp.data === false){
+                         this.isUsernameExist= true;
+                         this.openError1()
+                     }else {
+                         this.isUsernameExist=false;
+                     }
+                })
+            },
+            checkEmail(){
+                axios({
+                    method:"post",
+                    url:"http://localhost:8080/meitishangcheng-system/userCheckEmail",
+                    data:this.Manager.email
+                }).then(resp => {
+                    if (resp.data === false){
+                        this.isEmailExist= true;
+                        this.openError2()
+                    }else {
+                        this.isEmailExist=false;
+                    }
+                })
+            },
+            submitCode(){
+                var code1 = /^[\w]{6,12}$/;
+                var code2 = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+                if (this.Manager.username === ''){
+                    this.openError3();
+                }else if (this.Manager.password ===''){
+                    this.openError4();
+                }else if (this.Manager.email === ''){
+                    this.openError5();
+                }else if (code1.test(this.Manager.username) === false){
+                    this.openError6();
+                }else if (code1.test(this.Manager.password) === false){
+                    this.openError7();
+                }else if (code2.test(this.Manager.email) === false){
+                    this.openError8();
+                }else if (this.isUsernameExist === true){
+                    this.openError1();
+                }else if (this.isEmailExist === true){
+                    this.openError2();
+                }else {
+                    axios({
+                        method:"post",
+                        url:"http://localhost:8080/meitishangcheng-system/userCheckCode",
+                        data: this.Manager.email
+                    }).then(resp => {
+                        if (resp.data !== 'error'){
+                            this.send = true;
+                            this.code = resp.data;
+                            this.sendSuccess();
+                        }else {
+                            this.send = false;
+                            this.code = '';
+                            this.sendError();
+                        }
+                    })
+                }
+            },
+            register() {
+                var code1 = /^[\w]{6,12}$/;
+                var code2 = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+                 if (this.Manager.username === '') {
+                    this.openError3();
+                } else if (this.Manager.password === '') {
+                    this.openError4();
+                } else if (this.Manager.email === '') {
+                    this.openError5();
+                } else if (code1.test(this.Manager.username) === false) {
+                    this.openError6();
+                } else if (code1.test(this.Manager.password) === false) {
+                    this.openError7();
+                } else if (code2.test(this.Manager.email) === false) {
+                    this.openError8();
+                } else if (this.isUsernameExist === true) {
+                    this.openError1();
+                } else if (this.isEmailExist === true) {
+                    this.openError2();
+                } else if (this.verificationCode === ''){
+                    this.openError9();
+                } else if (this.verificationCode !== this.code){
+                    this.codeError();
+                 }else {
+                     axios({
+                         method:'post',
+                         url:'http://localhost:8080/meitishangcheng-system/managerRegister?power='+this.power,
+                         data:this.Manager
+                     }).then(resp =>{
+                         if (resp.data === 'success'){
+                            this.registerSuccess();
+                             this.isUsernameExist= true;
+                             this.isEmailExist= true;
+                             this.code = 'this is a bug'
+                         }else {
+                             this.sendError();
+                         }
+                     })
+                 }
+                    }
+        }
+    })
+</script>
+
+<script type="text/javascript">
+    $(".txt input").on("focus", function(){
+        $(this).addClass("focus");
+    });
+
+    $(".txt input").on("blur", function(){
+        if($(this).val() == "")
+            $(this).removeClass("focus");
+    });
+
+</script>
+</html>

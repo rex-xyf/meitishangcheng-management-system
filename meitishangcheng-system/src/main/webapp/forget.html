@@ -1,0 +1,120 @@
+
+<!--  Created by IntelliJ IDEA.
+  User: v
+  Date: 2022/10/16
+  Time: 10:32
+  To change this template use File | Settings | File Templates.-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>find</title>
+    <link rel="stylesheet" href="css/styleForSign.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" charset="utf-8"></script>
+    <script src="js/vue.js"></script>
+    <script src="js/axios.js"></script>
+    <script src="element-ui/lib/index.js"></script>
+    <link rel="stylesheet" href="element-ui/lib/theme-chalk/index.css">
+</head>
+<body>
+<div id="forgetPage">
+<form action="#" class="login-form" id="forget">
+    <h1>Retrieve Password</h1>
+    <div class="txt">
+        <input type="text" name="username" v-model="User.username">
+        <span data-placeholder="Username"></span>
+    </div>
+
+    <div class="txt">
+        <input type="text" name="email" v-model="User.email">
+        <span data-placeholder="E-mail"></span>
+    </div>
+
+    <input type="button" class="signup" value="Send" @click=find>
+
+    <div class="bottom-text">
+        Remember? <a href="login.html">Login</a>
+    </div>
+
+</form>
+</div>
+</body>
+<script>
+    new Vue({
+        el:"#forgetPage",
+        data(){
+            return{
+                User:{
+                    username:'',
+                    email:''
+                }
+            }
+        },
+        methods:{
+            findSuccess() {
+                this.$message({
+                    message: ' The mail has been sent, please return to login',
+                    type: 'success'
+                });
+            },
+            findError(){
+                this.$message.error('Username and mail do not match');
+            },
+            findError1(){
+                this.$message.error('unknown error');
+            },
+            UsernameNotFound() {
+                this.$notify({
+                    title: 'warning',
+                    message: 'Please input a username',
+                    type: 'warning'
+                });
+            },
+            emailNotFound() {
+                this.$notify({
+                    title: 'warning',
+                    message: 'Please input a password',
+                    type: 'warning'
+                });
+            },
+            find(){
+                if (this.User.username === ''){
+                    this.UsernameNotFound();
+                }else if (this.User.email === ''){
+                    this.emailNotFound();
+                }else {
+                    axios({
+                        method:'post',
+                        url:'http://localhost:8080/meitishangcheng-system/userFindCode',
+                        data:this.User
+                    }).then(resp=>{
+                        if (resp.data === 'success'){
+                            this.findSuccess();
+                        }else if (resp.data ==='error'){
+                            this.findError();
+                        }else {
+                            this.findError1();
+                        }
+                    })
+                }
+            }
+        }
+    })
+
+</script>
+
+
+<script type="text/javascript">
+    $(".txt input").on("focus", function(){
+        $(this).addClass("focus");
+    });
+
+    $(".txt input").on("blur", function(){
+        if($(this).val() == "")
+            $(this).removeClass("focus");
+    });
+
+</script>
+
+</html>

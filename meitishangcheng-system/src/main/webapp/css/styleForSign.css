@@ -108,5 +108,65 @@ body{
 }
 
 #forget{
-    width: 540px;
+    height: 470px;
+}
+
+.check{
+    padding: 0;
+    position: relative;
+    margin: 20px 0 20px;
+    font-size: 15px;
+    color: #adadad;
+}
+
+.check input{
+    font-size: 15px;
+    color: #333;
+    border: none;
+    width: 100%;
+    outline: none;
+    background: none;
+    padding: 0 5px;
+    height: 40px;
+}
+
+input[type="checkbox"] {
+    width: 15px;
+    height: 15px;
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 13px;
+    position: relative;
+    -webkit-appearance: none;
+}
+
+input[type="checkbox"]::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: #fff;
+    width: 100%;
+    height: 100%;
+    border: 1px solid #d9d9d9;
+}
+
+input[type="checkbox"]:checked::before {
+    content: "\2713";
+    background-color: #fff;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 1px solid #3498db;
+    color: #3498db;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.remember{
+    padding-left: 5px;
+    padding-right: 135px;
 }

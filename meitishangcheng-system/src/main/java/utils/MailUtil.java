@@ -37,9 +37,10 @@ public class MailUtil  {
             // 2.2设置接收人
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(mail));
             // 2.3设置邮件主题
-            message.setSubject("账号激活");
+            message.setSubject("Verification Code");
             // 2.4设置邮件内容
             String content = "<html><head></head><body><h1>Dear user!<br>" +
+                    "<h3>You are using this email to register an account</h3>"+
                     "<h3>This is your verification code. Please use it within 10 minutes.</h3>" +
                     "</h1><h3>"+actcode+"<br>----form metishangcheng-system</h3></body></html>";
             message.setContent(content, "text/html;charset=UTF-8");

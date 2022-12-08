@@ -6,21 +6,21 @@ import pojo.Employee;
 import java.util.List;
 
 public interface EmployeeMapper {
-    List<Employee> selectAll();
+    List<Employee> selectAll(@Param("begin") int begin, @Param("size") int size, @Param("key") String key, @Param("value") String value);
 
-    void add(Employee Employee);
-
-    Employee selectById(int id);
-
-    void update(Employee Employee);
+    void add(Employee employee);
 
     void delete(int id);
 
+    void update(Employee employee);
+
+    Employee selectById(int id);
+
     void deleteByIds(@Param("ids") int[] ids);
 
-    List<Employee> select(@Param("key") String key, @Param("value") String value);
+    List<Employee> selectByIds(@Param("ids") int[] ids);
 
-    List<Employee> selectLimit(@Param("begin")int begin,@Param("size")int size);
+    int count(@Param("key") String key, @Param("value") String value);
 
-    int selectCount();
+    void addId(Employee employee);
 }

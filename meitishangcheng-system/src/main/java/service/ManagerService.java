@@ -30,12 +30,34 @@ public class ManagerService {
         sqlSession.close();
     }
 
-    public Manager selectByEmail(Manager manager){
+    public Manager selectByEmail(String email){
         SqlSession sqlSession = sqlSessionFactory.openSession(true);
         ManagerMapper mapper = sqlSession.getMapper(ManagerMapper.class);
-        Manager manager1 = mapper.selectByEmail(manager);
+        Manager manager1 = mapper.selectByEmail(email);
         sqlSession.close();
         return manager1;
+    }
+
+    public Manager find(Manager manager){
+        SqlSession sqlSession = sqlSessionFactory.openSession(true);
+        ManagerMapper mapper = sqlSession.getMapper(ManagerMapper.class);
+        Manager manager1 = mapper.find(manager);
+        sqlSession.close();
+        return manager1;
+    }
+
+    public void updatePassword(Manager manager){
+        SqlSession sqlSession = sqlSessionFactory.openSession(true);
+        ManagerMapper mapper = sqlSession.getMapper(ManagerMapper.class);
+        mapper.updatePassword(manager);
+        sqlSession.close();
+    }
+
+    public void updatePagePassword(String username,String password){
+        SqlSession sqlSession = sqlSessionFactory.openSession(true);
+        ManagerMapper mapper = sqlSession.getMapper(ManagerMapper.class);
+        mapper.updatePagePassword(username,password);
+        sqlSession.close();
     }
 
 }

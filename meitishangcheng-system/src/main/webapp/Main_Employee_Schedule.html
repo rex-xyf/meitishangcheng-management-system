@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Meitishangcheng</title>
+</head>
+<body>
+<div id="form">
+    <el-header>
+        <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal">
+            <span class="welcome"><img src="img/logo.png" style=" padding-left: 20px"></span>
+            <span class="user" style="float: right; padding-right:50px ;font-size: 20px ; line-height: 55px">{{User}} | <a href="login.html"><i class="el-icon-switch-button"></i></a></span>
+            <span class="userPhoto" style="float: right"><img src="img/user.png"></span>
+        </el-menu>
+    </el-header>
+    <el-container>
+        <!--侧边-->
+        <el-aside>
+            <el-col>
+                <el-menu
+                        default-active="2"
+                        class="el-menu-vertical-demo">
+                    <el-menu-item index="1" @click="toMain_Employee">
+                        <i class="el-icon-user-solid"></i>
+                        <span slot="title">Personal Information</span>
+                    </el-menu-item>
+                    <el-menu-item index="2" @click="toMain_Employee_Schedule">
+                        <i class="el-icon-date"></i>
+                        <span slot="title" >Daily Schedule</span>
+                    </el-menu-item>
+                    <el-menu-item index="3" @click="toMain_Stock_Employee" :disabled="Manager3">
+                        <i class="el-icon-s-goods"></i>
+                        <span slot="title">Stock Management</span>
+                    </el-menu-item>
+                    <el-menu-item index="4" @click="toMain_ChangePassword_Employee">
+                        <i class="el-icon-setting"></i>
+                        <span slot="title">Change Password</span>
+                    </el-menu-item>
+                </el-menu>
+            </el-col>
+        </el-aside>
+        <!--主页面-->
+        <el-main>
+            <el-calendar>
+                <template
+                        slot="dateCell"
+                        slot-scope="{date, data}">
+                    <p>
+                        {{ data.day.split('-').slice(1).join('-') }}<br /> {{dealMyDate(data.day)}}
+                    </p>
+                </template>
+            </el-calendar>
+            <el-row style="text-align: center">
+                <el-button type="primary" round @click="dialogVisible = true">Clock In</el-button>
+                <el-button type="primary" round @click="editDialogVisible = true">Ask For Leave</el-button>
+            </el-row>
+            <!--打卡页面-->
+            <el-dialog
+                    title="Clock In"
+                    :visible.sync="dialogVisible"
+                    width="25%"
+            >
+
+                <el-form ref="form" :model="form" label-width="120px">
+                    <el-form-item label="Time">
+                        <el-date-picker
+                            v-model="form.value"
+                            :disabled="true">
+                    </el-date-picker>
+                    </el-form-item>
+                    <el-form-item label="Detection Time">
+                            <el-date-picker
+                                    v-model="form.time"
+                                    type="datetime"
+                                    placeholder="Test COVID19 result time">
+                            </el-date-picker>
+                    </el-form-item>
+                    <el-form-item label="Result">
+                        <el-select v-model="form.result" placeholder="Result">
+                            <el-option label="positive" value="positive"></el-option>
+                            <el-option label="negative" value="negative"></el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" @click="add">Clock In</el-button>
+                        <el-button @click="dialogVisible = false">cancel</el-button>
+                    </el-form-item>
+                </el-form>
+            </el-dialog>
+            <!--请假-->
+            <el-dialog
+                    title="Ask for leave"
+                    :visible.sync="editDialogVisible"
+                    width="35%"
+            >
+
+                <el-form ref="form" :model="timeForm" label-width="120px">
+                    <el-form-item label="Time">
+                        <el-date-picker
+                                v-model="timeForm.timeValue"
+                                type="daterange"
+                                range-separator="to"
+                                start-placeholder="Start"
+                                end-placeholder="End">
+                        </el-date-picker>
+                    </el-form-item>
+                    <el-form-item label="Reason">
+                        <el-select v-model="timeForm.reason" placeholder="Reason">
+                            <el-option label="compassionate leave" value="thing"></el-option>
+                            <el-option label="sick leave" value="sick"></el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" @click="edit">Submit application</el-button>
+                        <el-button @click="editDialogVisible = false">cancel</el-button>
+                    </el-form-item>
+                </el-form>
+            </el-dialog>
+        </el-main>
+    </el-container>
+</div>
+<script src="js/vue.js"></script>
+<script src="js/axios.js"></script>
+<script src="element-ui/lib/index.js"></script>
+<link rel="stylesheet" href="element-ui/lib/theme-chalk/index.css">
+<script src="element-ui/lib/umd/locale/en.js"></script>
+<script>
+    ELEMENT.locale(ELEMENT.lang.en);
+    new Vue({
+        el:"#form",
+        mounted(){
+            this.User = this.getCookie("isLogin");
+            this.selectStock()
+            this.email = this.getCookie("loginEmail")
+            this.selectAll();
+        },
+        data() {
+            return {
+                //日历
+                resDate: [],
+                //是否为商场管理
+                Manager3:true,
+                //邮箱
+                email:'',
+                //当前用户
+                User: '',
+                //对话框
+                dialogVisible: false,
+                editDialogVisible:false,
+                //对话框表单信息
+                form: {
+                    //当前时间
+                    value:new Date(),
+                    //核酸时间
+                    time:'',
+                    //核酸结果
+                    result:''
+                },
+                timeForm:{
+                    timeValue: [],
+                    reason:''
+                }
+            }
+        },
+        methods: {
+            dealMyDate(v) {
+                console.log(v)
+                let len = this.resDate.length
+                let res = ""
+                for(let i=0; i<len; i++){
+                    if(this.resDate[i].date === v) {
+                        res = this.resDate[i].content
+                        break
+                    }
+                }
+                return res
+            },
+            selectStock(){
+                axios({
+                    method:"post",
+                    url:"http://localhost:8080/meitishangcheng-system/userSelectStock",
+                    data:this.User
+                }).then(resp =>{
+                    if (resp.data === 'yes'){
+                        this.Manager3 = false
+                    }
+                })
+            },
+            //跳转
+            toMain_ChangePassword_Employee(){
+                location.href="http://localhost:8080/meitishangcheng-system/Main_ChangePassword_Employee.html"
+            },
+            toMain_Stock_Employee(){
+                location.href="http://localhost:8080/meitishangcheng-system/Main_Stock_Employee.html"
+            },
+            toMain_Employee_Schedule(){
+                location.href="http://localhost:8080/meitishangcheng-system/Main_Employee_Schedule.html"
+            },
+            toMain_Employee(){
+                location.href="http://localhost:8080/meitishangcheng-system/Main_Employee.html"
+            },
+            //获取cookie
+            getCookie(name) {
+                var cookieArr = document.cookie.split(";");
+                for (var i = 0; i < cookieArr.length; i++) {
+                    var cookiePair = cookieArr[i].split("=");
+                    if (name == cookiePair[0].trim()) {
+                        return decodeURIComponent(cookiePair[1]);
+                    }
+                }
+                return null;
+            },
+            //成功
+            Success() {
+                this.$message({
+                    showClose: true,
+                    message: 'Success!',
+                    type: 'success'
+                });
+            },
+            //失败
+            Error() {
+                this.$message({
+                    showClose: true,
+                    message: 'error',
+                    type: 'error'
+                });
+            },
+            //
+            ErrorTime() {
+                this.$message({
+                    showClose: true,
+                    message: 'COVID-19 nucleic acid results have exceeded 24 hours',
+                    type: 'error'
+                });
+            },
+            ErrorState(){
+                this.$message({
+                    showClose: true,
+                    message: 'The result is not negative, work prohibited',
+                    type: 'error'
+                });
+            },
+            selectAll(){
+
+            },
+            add(){
+                var beginTime = this.form.time
+                var endTime = this.form.value
+                var dateDiff = endTime.getTime() - beginTime.getTime();
+                if (this.form.result !=='negative'){
+                    this.ErrorState()
+                } else if (dateDiff > 86400000){
+                    this.ErrorTime()
+                }else {
+                    axios({
+                        method: "post",
+                        url:"http://localhost:8080/meitishangcheng-system/scheduleClockInServlet",
+                        data:this.User
+                    }).then(resp=>{
+                        if (resp.data === 'success'){
+                            this.Success();
+                            this.selectAll();
+                            this.resDate = [{date:"2022-12-05",content:"√"}]
+                        }else {
+                            this.Error();
+                            this.selectAll();
+                        }
+                    })
+                }
+
+
+            },
+            edit(){
+                var time = this.timeForm.timeValue[1].getTime()-this.timeForm.timeValue[0].getTime()
+                var number = Math.floor(time/86400000);
+                if (number !== 0 && this.timeForm.reason!==''){
+                    axios({
+                        method: "get",
+                        url:"http://localhost:8080/meitishangcheng-system/scheduleLeaveServlet?user="+this.User+"&number="+number,
+                    }).then(resp=>{
+                        if (resp.data === 'success'){
+                            this.Success();
+                            this.selectAll();
+                        }else {
+                            this.Error();
+                            this.selectAll();
+                        }
+                    })
+                }
+            }
+
+
+        }
+    })
+</script>
+
+</body>
+</html>
