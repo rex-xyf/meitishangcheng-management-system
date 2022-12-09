@@ -23,4 +23,8 @@ public interface EmployeeMapper {
     int count(@Param("key") String key, @Param("value") String value);
 
     void addId(Employee employee);
+
+    String[] selectDepartment();
+
+    String[] selectWorkShifts();
 }

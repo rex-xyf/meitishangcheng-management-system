@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Meitishangcheng</title>
+</head>
+<body>
+<div id="form">
+    <el-header>
+        <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal">
+            <span class="welcome"><img src="img/logo.png" style=" padding-left: 20px"></span>
+            <span class="user" style="float: right; padding-right:50px ;font-size: 20px ; line-height: 55px">{{User}} | <a href="login.html"><i class="el-icon-switch-button"></i></a></span>
+            <span class="userPhoto" style="float: right"><img src="img/user.png"></span>
+        </el-menu>
+    </el-header>
+    <el-container>
+        <!--侧边-->
+        <el-aside>
+            <el-col>
+                <el-menu
+                        default-active="4"
+                        class="el-menu-vertical-demo">
+                    <el-menu-item index="1" @click="toMain">
+                        <i class="el-icon-user-solid"></i>
+                        <span slot="title">Employee Management</span>
+                    </el-menu-item>
+                    <el-menu-item index="2" @click="toMain_Schedule">
+                        <i class="el-icon-date"></i>
+                        <span slot="title" >Schedule Management</span>
+                    </el-menu-item>
+                    <el-menu-item index="3" @click="toMain_Stock">
+                        <i class="el-icon-s-goods"></i>
+                        <span slot="title">Stock Management</span>
+                    </el-menu-item>
+                    <el-menu-item index="4" @click="toMain_Data">
+                        <i class="el-icon-document"></i>
+                        <span slot="title"> Data </span>
+                    </el-menu-item>
+                    <el-menu-item index="5" @click="toMain_ChangePassword_Manager">
+                        <i class="el-icon-setting"></i>
+                        <span slot="title">Change Password</span>
+                    </el-menu-item>
+                </el-menu>
+            </el-col>
+        </el-aside>
+        <!--主页面-->
+        <el-main>
+            <template>
+                <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
+                    <el-tab-pane label="Departmental Data" name="first">
+                        <div id="chart1" style="width:1180px;height:550px"></div>
+                    </el-tab-pane>
+                    <el-tab-pane label="Work Shifts Data" name="second">
+                        <div id="chart2" style="width:1180px;height:550px"></div>
+                    </el-tab-pane>
+                    <el-tab-pane label="Clock In Data" name="third">
+                        <div id="chart3" style="width:1180px;height:550px"></div>
+                    </el-tab-pane>
+                    <el-tab-pane label="Leave Data" name="fourth">
+                        <div id="chart4" style="width:1180px;height:550px"></div>
+                    </el-tab-pane>
+                </el-tabs>
+            </template>
+        </el-main>
+    </el-container>
+</div>
+<script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.4.0/echarts.min.js"></script>
+<script src="js/vue.js"></script>
+<script src="js/axios.js"></script>
+<script src="element-ui/lib/index.js"></script>
+<link rel="stylesheet" href="element-ui/lib/theme-chalk/index.css">
+<script src="element-ui/lib/umd/locale/en.js"></script>
+<script>
+    ELEMENT.locale(ELEMENT.lang.en);
+    new Vue({
+        el:"#form",
+        mounted(){
+            this.getChart1();
+            this.getChart2();
+            this.getChart3();
+            this.getChart4();
+            this.manager = this.getCookie("isManager")
+            this.User = this.getCookie("isLogin");
+            this.email = this.getCookie("loginEmail")
+        },
+        data() {
+            return {
+                data1:[],
+                activeName: 'first',
+                manager:true,
+                //当前用户
+                User: '',
+                form: {
+                    password: '',
+                    confirmPassword: ''
+                }
+            }
+        },
+        methods: {
+            handleClick(tab, event) {
+                console.log(tab, event);
+            },
+            //跳转
+            toMain(){
+                location.href="http://localhost:8080/meitishangcheng-system/Main.html"
+            },
+            toMain_Stock(){
+                location.href="http://localhost:8080/meitishangcheng-system/Main_Stock.html"
+            },
+            toMain_Schedule(){
+                location.href="http://localhost:8080/meitishangcheng-system/Main_Schedule.html"
+            },
+            toMain_ChangePassword_Manager(){
+                location.href="http://localhost:8080/meitishangcheng-system/Main_ChangePassword_Manager.html"
+            },
+            toMain_Data(){
+                location.href="http://localhost:8080/meitishangcheng-system/Main_Data.html"
+            },
+            //获取cookie
+            getCookie(name) {
+                var cookieArr = document.cookie.split(";");
+                for (var i = 0; i < cookieArr.length; i++) {
+                    var cookiePair = cookieArr[i].split("=");
+                    if (name == cookiePair[0].trim()) {
+                        return decodeURIComponent(cookiePair[1]);
+                    }
+                }
+                return null;
+            },
+            //成功
+            Success() {
+                this.$message({
+                    showClose: true,
+                    message: 'Success!',
+                    type: 'success'
+                });
+            },
+            //失败
+            Error() {
+                this.$message({
+                    showClose: true,
+                    message: 'error',
+                    type: 'error'
+                });
+            },
+            getChart1(){
+                axios({
+                    method:'get',
+                    url:'http://localhost:8080/meitishangcheng-system/employeeSelectDepartmentServlet'
+                }).then(resp=>{
+                    var myChart1 = echarts.init(document.getElementById('chart1'));
+
+                    var option1 = {
+                        title: {
+                            text: 'Number of people in each department',
+                            subtext: 'Pie chart',
+                            left: 'center'
+                        },
+                        tooltip: {
+                            trigger: 'item'
+                        },
+                        legend: {
+                            orient: 'vertical',
+                            left: 'left'
+                        },
+                        series: [
+                            {
+                                name: 'Number',
+                                type: 'pie',
+                                radius: '50%',
+                                data: resp.data,
+                                emphasis: {
+                                    itemStyle: {
+                                        shadowBlur: 10,
+                                        shadowOffsetX: 0,
+                                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                    }
+                                }
+                            }
+                        ]
+                    };
+                    myChart1.setOption(option1);
+                })
+            },
+            getChart2(){
+                axios({
+                    method:'get',
+                    url:'http://localhost:8080/meitishangcheng-system/employeeSelectWorkShiftsServlet'
+                }).then(resp=>{
+                    console.log(resp.data)
+                    var myChart2 = echarts.init(document.getElementById('chart2'));
+
+                    var option2 = {
+                        title: {
+                            text: 'Number of people in each work shift',
+                            subtext: 'Pie chart',
+                            left: 'center'
+                        },
+                        tooltip: {
+                            trigger: 'item'
+                        },
+                        legend: {
+                            orient: 'vertical',
+                            left: 'left'
+                        },
+                        series: [
+                            {
+                                name: 'Number',
+                                type: 'pie',
+                                radius: '50%',
+                                data: resp.data,
+                                emphasis: {
+                                    itemStyle: {
+                                        shadowBlur: 10,
+                                        shadowOffsetX: 0,
+                                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                    }
+                                }
+                            }
+                        ]
+                    };
+                    myChart2.setOption(option2);
+                })
+            },
+            getChart3(){
+                axios({
+                    method:'get',
+                    url:'http://localhost:8080/meitishangcheng-system/scheduleSelectAttendanceServlet'
+                }).then(resp=>{
+                    var myChart3 = echarts.init(document.getElementById('chart3'));
+
+                    var option3 = {
+                        title: {
+                            text: 'Leave',
+                            subtext: 'Pie chart',
+                            left: 'center'
+                        },
+                        tooltip: {
+                            trigger: 'item'
+                        },
+                        legend: {
+                            orient: 'vertical',
+                            left: 'left'
+                        },
+                        series: [
+                            {
+                                name: 'Number',
+                                type: 'pie',
+                                radius: '50%',
+                                data: resp.data,
+                                emphasis: {
+                                    itemStyle: {
+                                        shadowBlur: 10,
+                                        shadowOffsetX: 0,
+                                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                    }
+                                }
+                            }
+                        ]
+                    };
+                    myChart3.setOption(option3);
+                })
+            },
+            getChart4(){
+                axios({
+                    method:'get',
+                    url:'http://localhost:8080/meitishangcheng-system/scheduleSelectLeaveServlet'
+                }).then(resp=>{
+                    var myChart4 = echarts.init(document.getElementById('chart4'));
+
+                    var option4 = {
+                        title: {
+                            text: 'Attendance',
+                            subtext: 'Pie chart',
+                            left: 'center'
+                        },
+                        tooltip: {
+                            trigger: 'item'
+                        },
+                        legend: {
+                            orient: 'vertical',
+                            left: 'left'
+                        },
+                        series: [
+                            {
+                                name: 'Number',
+                                type: 'pie',
+                                radius: '50%',
+                                data: resp.data,
+                                emphasis: {
+                                    itemStyle: {
+                                        shadowBlur: 10,
+                                        shadowOffsetX: 0,
+                                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                    }
+                                }
+                            }
+                        ]
+                    };
+                    myChart4.setOption(option4);
+                })
+            }
+
+        }
+    })
+</script>
+
+</body>
+</html>

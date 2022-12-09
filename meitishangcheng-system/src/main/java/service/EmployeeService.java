@@ -78,4 +78,20 @@ public class EmployeeService {
         sqlSession.close();
         return employees;
     }
+
+    public String[] selectDepartment(){
+        SqlSession sqlSession = sqlSessionFactory.openSession(true);
+        EmployeeMapper mapper = sqlSession.getMapper(EmployeeMapper.class);
+        String[] strings = mapper.selectDepartment();
+        sqlSession.close();
+        return strings;
+    }
+
+    public String[] selectWorkShifts(){
+        SqlSession sqlSession = sqlSessionFactory.openSession(true);
+        EmployeeMapper mapper = sqlSession.getMapper(EmployeeMapper.class);
+        String[] strings = mapper.selectWorkShifts();
+        sqlSession.close();
+        return strings;
+    }
 }

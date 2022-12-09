@@ -30,4 +30,8 @@ public interface ScheduleMapper {
     void updateState(@Param("id") int id,@Param("state") int state);
 
     void delete(int id);
+
+    boolean[] selectAttendance();
+
+    boolean[] selectLeave();
 }

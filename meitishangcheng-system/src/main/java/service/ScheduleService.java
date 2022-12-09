@@ -1,10 +1,8 @@
 package service;
 
-import mapper.DepartmentMapper;
 import mapper.ScheduleMapper;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
-import pojo.Department;
 import pojo.Schedule;
 import utils.GetSqlSessionFactory;
 
@@ -96,6 +94,7 @@ public class ScheduleService {
         mapper.updateAttendance(id,attendance);
         sqlSession.close();
     }
+
     public int selectRequestCount(){
         SqlSession sqlSession = sqlSessionFactory.openSession(true);
         ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
@@ -103,4 +102,21 @@ public class ScheduleService {
         sqlSession.close();
         return count;
     }
+
+    public boolean[] selectAttendance(){
+        SqlSession sqlSession = sqlSessionFactory.openSession(true);
+        ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
+        boolean[] attendance = mapper.selectAttendance();
+        sqlSession.close();
+        return attendance;
+    }
+
+    public boolean[] selectLeave(){
+        SqlSession sqlSession = sqlSessionFactory.openSession(true);
+        ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
+        boolean[] leave = mapper.selectLeave();
+        sqlSession.close();
+        return leave;
+    }
+
 }
