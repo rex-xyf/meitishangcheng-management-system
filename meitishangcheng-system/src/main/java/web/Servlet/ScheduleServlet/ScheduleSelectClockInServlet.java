@@ -15,23 +15,29 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-@WebServlet("/scheduleClockInServlet")
-public class ScheduleClockInServlet extends HttpServlet {
+@WebServlet("/scheduleSelectClockInServlet")
+public class ScheduleSelectClockInServlet extends HttpServlet {
     ScheduleService scheduleService = new ScheduleService();
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String s = req.getReader().readLine();
         Schedule schedule = scheduleService.selectByName(s);
-        scheduleService.updateAttendance(schedule.getId(),true);
-        SimpleDateFormat dateFormat  =new SimpleDateFormat("yyyy-MM-dd");
-        java.util.Date dateNow = new java.util.Date();
-        String format = dateFormat.format(dateNow);
-        DateBean dateBean =new DateBean(format,"yes");
-        List<DateBean> dateBeans = new ArrayList<>();
-        dateBeans.add(dateBean);
-        String s1 = JSON.toJSONString(dateBeans);
-        System.out.println("clock in....");
-        resp.getWriter().write(s1);
+        if (!schedule.getAttendance()){
+            DateBean dateBean = new DateBean();
+            String s1 = JSON.toJSONString(dateBean);
+            resp.getWriter().write(s1);
+        }else if (schedule.getAttendance()){
+            SimpleDateFormat dateFormat  =new SimpleDateFormat("yyyy-MM-dd");
+            java.util.Date dateNow = new java.util.Date();
+            String format = dateFormat.format(dateNow);
+            DateBean dateBean =new DateBean(format,"yes");
+            List<DateBean> dateBeans = new ArrayList<>();
+            dateBeans.add(dateBean);
+            String s1 = JSON.toJSONString(dateBeans);
+            System.out.println(s1);
+            System.out.println("select.....");
+            resp.getWriter().write(s1);
+        }
     }
 
     @Override

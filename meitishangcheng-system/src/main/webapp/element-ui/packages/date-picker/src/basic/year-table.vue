@@ -45,7 +45,7 @@
 
 <script type="text/babel">
   import { hasClass } from 'element-ui/src/utils/dom';
-  import { isDate, range, nextDate, getDayCountOfYear } from 'element-ui/src/utils/date-util';
+  import { isDate, range, nextDate, getDayCountOfYear } from 'element-ui/src/utils/dateBean-util';
   import { arrayFindIndex, coerceTruthyValueToArray } from 'element-ui/src/utils/util';
 
   const datesInYear = year => {
@@ -64,13 +64,13 @@
           return val === null || (val instanceof Date && isDate(val));
         }
       },
-      date: {},
+      dateBean: {},
       selectionMode: {}
     },
 
     computed: {
       startYear() {
-        return Math.floor(this.date.getFullYear() / 10) * 10;
+        return Math.floor(this.dateBean.getFullYear() / 10) * 10;
       }
     },
 
@@ -82,7 +82,7 @@
         style.disabled = typeof this.disabledDate === 'function'
           ? datesInYear(year).every(this.disabledDate)
           : false;
-        style.current = arrayFindIndex(coerceTruthyValueToArray(this.value), date => date.getFullYear() === year) >= 0;
+        style.current = arrayFindIndex(coerceTruthyValueToArray(this.value), dateBean => dateBean.getFullYear() === year) >= 0;
         style.today = today.getFullYear() === year;
         style.default = this.defaultValue && this.defaultValue.getFullYear() === year;
 
@@ -96,7 +96,7 @@
           const year = target.textContent || target.innerText;
           if (this.selectionMode === 'years') {
             const value = this.value || [];
-            const idx = arrayFindIndex(value, date => date.getFullYear() === Number(year));
+            const idx = arrayFindIndex(value, dateBean => dateBean.getFullYear() === Number(year));
             const newValue = idx > -1
               ? [...value.slice(0, idx), ...value.slice(idx + 1)]
               : [...value, new Date(year)];

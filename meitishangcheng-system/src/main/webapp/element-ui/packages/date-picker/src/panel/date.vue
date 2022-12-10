@@ -2,7 +2,7 @@
   <transition name="el-zoom-in-top" @after-enter="handleEnter" @after-leave="handleLeave">
     <div
       v-show="visible"
-      class="el-picker-panel el-date-picker el-popper"
+      class="el-picker-panel el-dateBean-picker el-popper"
       :class="[{
         'has-sidebar': $slots.sidebar || shortcuts,
         'has-time': showTime
@@ -18,8 +18,8 @@
             @click="handleShortcutClick(shortcut)">{{ shortcut.text }}</button>
         </div>
         <div class="el-picker-panel__body">
-          <div class="el-date-picker__time-header" v-if="showTime">
-            <span class="el-date-picker__editor-wrap">
+          <div class="el-dateBean-picker__time-header" v-if="showTime">
+            <span class="el-dateBean-picker__editor-wrap">
               <el-input
                 :placeholder="t('el.datepicker.selectDate')"
                 :value="visibleDate"
@@ -27,7 +27,7 @@
                 @input="val => userInputDate = val"
                 @change="handleVisibleDateChange" />
             </span>
-            <span class="el-date-picker__editor-wrap" v-clickoutside="handleTimePickClose">
+            <span class="el-dateBean-picker__editor-wrap" v-clickoutside="handleTimePickClose">
               <el-input
                 ref="input"
                 @focus="timePickerVisible = true"
@@ -46,67 +46,67 @@
             </span>
           </div>
           <div
-            class="el-date-picker__header"
-            :class="{ 'el-date-picker__header--bordered': currentView === 'year' || currentView === 'month' }"
+            class="el-dateBean-picker__header"
+            :class="{ 'el-dateBean-picker__header--bordered': currentView === 'year' || currentView === 'month' }"
             v-show="currentView !== 'time'">
             <button
               type="button"
               @click="prevYear"
               :aria-label="t(`el.datepicker.prevYear`)"
-              class="el-picker-panel__icon-btn el-date-picker__prev-btn el-icon-d-arrow-left">
+              class="el-picker-panel__icon-btn el-dateBean-picker__prev-btn el-icon-d-arrow-left">
             </button>
             <button
               type="button"
               @click="prevMonth"
-              v-show="currentView === 'date'"
+              v-show="currentView === 'dateBean'"
               :aria-label="t(`el.datepicker.prevMonth`)"
-              class="el-picker-panel__icon-btn el-date-picker__prev-btn el-icon-arrow-left">
+              class="el-picker-panel__icon-btn el-dateBean-picker__prev-btn el-icon-arrow-left">
             </button>
             <span
               @click="showYearPicker"
               role="button"
-              class="el-date-picker__header-label">{{ yearLabel }}</span>
+              class="el-dateBean-picker__header-label">{{ yearLabel }}</span>
             <span
               @click="showMonthPicker"
-              v-show="currentView === 'date'"
+              v-show="currentView === 'dateBean'"
               role="button"
-              class="el-date-picker__header-label"
+              class="el-dateBean-picker__header-label"
               :class="{ active: currentView === 'month' }">{{t(`el.datepicker.month${ month + 1 }`)}}</span>
             <button
               type="button"
               @click="nextYear"
               :aria-label="t(`el.datepicker.nextYear`)"
-              class="el-picker-panel__icon-btn el-date-picker__next-btn el-icon-d-arrow-right">
+              class="el-picker-panel__icon-btn el-dateBean-picker__next-btn el-icon-d-arrow-right">
             </button>
             <button
               type="button"
               @click="nextMonth"
-              v-show="currentView === 'date'"
+              v-show="currentView === 'dateBean'"
               :aria-label="t(`el.datepicker.nextMonth`)"
-              class="el-picker-panel__icon-btn el-date-picker__next-btn el-icon-arrow-right">
+              class="el-picker-panel__icon-btn el-dateBean-picker__next-btn el-icon-arrow-right">
             </button>
           </div>
 
           <div class="el-picker-panel__content">
-            <date-table
-              v-show="currentView === 'date'"
+            <dateBean-table
+              v-show="currentView === 'dateBean'"
               @pick="handleDatePick"
               :selection-mode="selectionMode"
               :first-day-of-week="firstDayOfWeek"
               :value="value"
               :default-value="defaultValue ? new Date(defaultValue) : null"
-              :date="date"
+              :dateBean="dateBean"
               :cell-class-name="cellClassName"
-              :disabled-date="disabledDate">
-            </date-table>
+              :disabled-dateBean="disabledDate">
+            </dateBean-table>
             <year-table
               v-show="currentView === 'year'"
               @pick="handleYearPick"
               :selection-mode="selectionMode"
               :value="value"
               :default-value="defaultValue ? new Date(defaultValue) : null"
-              :date="date"
-              :disabled-date="disabledDate">
+              :dateBean="dateBean"
+              :disabled-dateBean="disabledDate">
             </year-table>
             <month-table
               v-show="currentView === 'month'"
@@ -114,8 +114,8 @@
               :selection-mode="selectionMode"
               :value="value"
               :default-value="defaultValue ? new Date(defaultValue) : null"
-              :date="date"
-              :disabled-date="disabledDate">
+              :dateBean="dateBean"
+              :disabled-dateBean="disabledDate">
             </month-table>
           </div>
         </div>
@@ -123,7 +123,7 @@
 
       <div
         class="el-picker-panel__footer"
-        v-show="footerVisible && (currentView === 'date' || currentView === 'month' || currentView === 'year')">
+        v-show="footerVisible && (currentView === 'dateBean' || currentView === 'month' || currentView === 'year')">
         <el-button
           size="mini"
           type="text"
@@ -163,7 +163,7 @@
     extractDateFormat,
     extractTimeFormat,
     timeWithinRange
-  } from 'element-ui/src/utils/date-util';
+  } from 'element-ui/src/utils/dateBean-util';
   import Clickoutside from 'element-ui/src/utils/clickoutside';
   import Locale from 'element-ui/src/mixins/locale';
   import ElInput from 'element-ui/packages/input';
@@ -171,7 +171,7 @@
   import TimePicker from './time';
   import YearTable from '../basic/year-table';
   import MonthTable from '../basic/month-table';
-  import DateTable from '../basic/date-table';
+  import DateTable from '../basic/dateBean-table';
 
   export default {
     mixins: [Locale],
@@ -195,15 +195,15 @@
         if (this.selectionMode === 'months' && this.value) return;
         if (this.selectionMode === 'years' && this.value) return;
         if (isDate(val)) {
-          this.date = new Date(val);
+          this.dateBean = new Date(val);
         } else {
-          this.date = this.getDefaultValue();
+          this.dateBean = this.getDefaultValue();
         }
       },
 
       defaultValue(val) {
         if (!isDate(this.value)) {
-          this.date = val ? new Date(val) : new Date();
+          this.dateBean = val ? new Date(val) : new Date();
         }
       },
 
@@ -218,7 +218,7 @@
             this.currentView = 'month';
           }
         } else if (newVal === 'dates') {
-          this.currentView = 'date';
+          this.currentView = 'dateBean';
         } else if (newVal === 'years') {
           this.currentView = 'year';
         } else if (newVal === 'months') {
@@ -231,21 +231,21 @@
       proxyTimePickerDataProperties() {
         const format = timeFormat => {this.$refs.timepicker.format = timeFormat;};
         const value = value => {this.$refs.timepicker.value = value;};
-        const date = date => {this.$refs.timepicker.date = date;};
+        const dateBean = dateBean => {this.$refs.timepicker.dateBean = dateBean;};
         const selectableRange = selectableRange => {this.$refs.timepicker.selectableRange = selectableRange;};
 
         this.$watch('value', value);
-        this.$watch('date', date);
+        this.$watch('dateBean', dateBean);
         this.$watch('selectableRange', selectableRange);
 
         format(this.timeFormat);
         value(this.value);
-        date(this.date);
+        dateBean(this.dateBean);
         selectableRange(this.selectableRange);
       },
 
       handleClear() {
-        this.date = this.getDefaultValue();
+        this.dateBean = this.getDefaultValue();
         this.$emit('pick', null);
       },
 
@@ -253,7 +253,7 @@
         if (!value) {
           this.$emit('pick', value, ...args);
         } else if (Array.isArray(value)) {
-          const dates = value.map(date => this.showTime ? clearMilliseconds(date) : clearTime(date));
+          const dates = value.map(dateBean => this.showTime ? clearMilliseconds(dateBean) : clearTime(dateBean));
           this.$emit('pick', dates, ...args);
         } else {
           this.$emit('pick', this.showTime ? clearMilliseconds(value) : clearTime(value), ...args);
@@ -263,7 +263,7 @@
       },
 
       // resetDate() {
-      //   this.date = new Date(this.date);
+      //   this.dateBean = new Date(this.dateBean);
       // },
 
       showMonthPicker() {
@@ -276,7 +276,7 @@
 
       // XXX: 没用到
       // handleLabelClick() {
-      //   if (this.currentView === 'date') {
+      //   if (this.currentView === 'dateBean') {
       //     this.showMonthPicker();
       //   } else if (this.currentView === 'month') {
       //     this.showYearPicker();
@@ -284,26 +284,26 @@
       // },
 
       prevMonth() {
-        this.date = prevMonth(this.date);
+        this.dateBean = prevMonth(this.dateBean);
       },
 
       nextMonth() {
-        this.date = nextMonth(this.date);
+        this.dateBean = nextMonth(this.dateBean);
       },
 
       prevYear() {
         if (this.currentView === 'year') {
-          this.date = prevYear(this.date, 10);
+          this.dateBean = prevYear(this.dateBean, 10);
         } else {
-          this.date = prevYear(this.date);
+          this.dateBean = prevYear(this.dateBean);
         }
       },
 
       nextYear() {
         if (this.currentView === 'year') {
-          this.date = nextYear(this.date, 10);
+          this.dateBean = nextYear(this.dateBean, 10);
         } else {
-          this.date = nextYear(this.date);
+          this.dateBean = nextYear(this.dateBean);
         }
       },
 
@@ -318,8 +318,8 @@
           const newDate = this.value
             ? modifyTime(this.value, value.getHours(), value.getMinutes(), value.getSeconds())
             : modifyWithTimeString(this.getDefaultValue(), this.defaultTime);
-          this.date = newDate;
-          this.emit(this.date, true);
+          this.dateBean = newDate;
+          this.emit(this.dateBean, true);
         } else {
           this.emit(value, true);
         }
@@ -334,15 +334,15 @@
 
       handleMonthPick(month) {
         if (this.selectionMode === 'month') {
-          this.date = modifyDate(this.date, this.year, month, 1);
-          this.emit(this.date);
+          this.dateBean = modifyDate(this.dateBean, this.year, month, 1);
+          this.emit(this.dateBean);
         } else if (this.selectionMode === 'months') {
           this.emit(month, true);
         } else {
-          this.date = changeYearMonthAndClampDate(this.date, this.year, month);
+          this.dateBean = changeYearMonthAndClampDate(this.dateBean, this.year, month);
           // TODO: should emit intermediate value ??
-          // this.emit(this.date);
-          this.currentView = 'date';
+          // this.emit(this.dateBean);
+          this.currentView = 'dateBean';
         }
       },
 
@@ -355,10 +355,10 @@
           if (!this.checkDateWithinRange(newDate)) {
             newDate = modifyDate(this.selectableRange[0][0], value.getFullYear(), value.getMonth(), value.getDate());
           }
-          this.date = newDate;
-          this.emit(this.date, this.showTime);
+          this.dateBean = newDate;
+          this.emit(this.dateBean, this.showTime);
         } else if (this.selectionMode === 'week') {
-          this.emit(value.date);
+          this.emit(value.dateBean);
         } else if (this.selectionMode === 'dates') {
           this.emit(value, true); // set false to keep panel open
         }
@@ -366,14 +366,14 @@
 
       handleYearPick(year) {
         if (this.selectionMode === 'year') {
-          this.date = modifyDate(this.date, year, 0, 1);
-          this.emit(this.date);
+          this.dateBean = modifyDate(this.dateBean, year, 0, 1);
+          this.emit(this.dateBean);
         } else if (this.selectionMode === 'years') {
           this.emit(year, true);
         } else {
-          this.date = changeYearMonthAndClampDate(this.date, year, this.month);
+          this.dateBean = changeYearMonthAndClampDate(this.dateBean, year, this.month);
           // TODO: should emit intermediate value ??
-          // this.emit(this.date, true);
+          // this.emit(this.dateBean, true);
           this.currentView = 'month';
         }
       },
@@ -382,8 +382,8 @@
         // NOTE: not a permanent solution
         //       consider disable "now" button in the future
         if ((!this.disabledDate || !this.disabledDate(new Date())) && this.checkDateWithinRange(new Date())) {
-          this.date = new Date();
-          this.emit(this.date);
+          this.dateBean = new Date();
+          this.emit(this.dateBean);
         }
       },
 
@@ -396,7 +396,7 @@
           const value = this.value
             ? this.value
             : modifyWithTimeString(this.getDefaultValue(), this.defaultTime);
-          this.date = new Date(value); // refresh date
+          this.dateBean = new Date(value); // refresh dateBean
           this.emit(value);
         }
       },
@@ -407,7 +407,7 @@
         } else if (this.selectionMode === 'year' || this.selectionMode === 'years') {
           this.currentView = 'year';
         } else {
-          this.currentView = 'date';
+          this.currentView = 'dateBean';
         }
       },
 
@@ -430,7 +430,7 @@
             event.preventDefault();
           }
           if (keyCode === 13 && this.userInputDate === null && this.userInputTime === null) { // Enter
-            this.emit(this.date, false);
+            this.emit(this.dateBean, false);
           }
         }
       },
@@ -438,29 +438,29 @@
       handleKeyControl(keyCode) {
         const mapping = {
           'year': {
-            38: -4, 40: 4, 37: -1, 39: 1, offset: (date, step) => date.setFullYear(date.getFullYear() + step)
+            38: -4, 40: 4, 37: -1, 39: 1, offset: (dateBean, step) => dateBean.setFullYear(dateBean.getFullYear() + step)
           },
           'month': {
-            38: -4, 40: 4, 37: -1, 39: 1, offset: (date, step) => date.setMonth(date.getMonth() + step)
+            38: -4, 40: 4, 37: -1, 39: 1, offset: (dateBean, step) => dateBean.setMonth(dateBean.getMonth() + step)
           },
           'week': {
-            38: -1, 40: 1, 37: -1, 39: 1, offset: (date, step) => date.setDate(date.getDate() + step * 7)
+            38: -1, 40: 1, 37: -1, 39: 1, offset: (dateBean, step) => dateBean.setDate(dateBean.getDate() + step * 7)
           },
           'day': {
-            38: -7, 40: 7, 37: -1, 39: 1, offset: (date, step) => date.setDate(date.getDate() + step)
+            38: -7, 40: 7, 37: -1, 39: 1, offset: (dateBean, step) => dateBean.setDate(dateBean.getDate() + step)
           }
         };
         const mode = this.selectionMode;
         const year = 3.1536e10;
-        const now = this.date.getTime();
-        const newDate = new Date(this.date.getTime());
+        const now = this.dateBean.getTime();
+        const newDate = new Date(this.dateBean.getTime());
         while (Math.abs(now - newDate.getTime()) <= year) {
           const map = mapping[mode];
           map.offset(newDate, map[keyCode]);
           if (typeof this.disabledDate === 'function' && this.disabledDate(newDate)) {
             continue;
           }
-          this.date = newDate;
+          this.dateBean = newDate;
           this.$emit('pick', newDate, true);
           break;
         }
@@ -469,24 +469,24 @@
       handleVisibleTimeChange(value) {
         const time = parseDate(value, this.timeFormat);
         if (time && this.checkDateWithinRange(time)) {
-          this.date = modifyDate(time, this.year, this.month, this.monthDate);
+          this.dateBean = modifyDate(time, this.year, this.month, this.monthDate);
           this.userInputTime = null;
-          this.$refs.timepicker.value = this.date;
+          this.$refs.timepicker.value = this.dateBean;
           this.timePickerVisible = false;
-          this.emit(this.date, true);
+          this.emit(this.dateBean, true);
         }
       },
 
       handleVisibleDateChange(value) {
-        const date = parseDate(value, this.dateFormat);
-        if (date) {
-          if (typeof this.disabledDate === 'function' && this.disabledDate(date)) {
+        const dateBean = parseDate(value, this.dateFormat);
+        if (dateBean) {
+          if (typeof this.disabledDate === 'function' && this.disabledDate(dateBean)) {
             return;
           }
-          this.date = modifyTime(date, this.date.getHours(), this.date.getMinutes(), this.date.getSeconds());
+          this.dateBean = modifyTime(dateBean, this.dateBean.getHours(), this.dateBean.getMinutes(), this.dateBean.getSeconds());
           this.userInputDate = null;
           this.resetView();
-          this.emit(this.date, true);
+          this.emit(this.dateBean, true);
         }
       },
 
@@ -504,9 +504,9 @@
         return this.defaultValue ? new Date(this.defaultValue) : new Date();
       },
 
-      checkDateWithinRange(date) {
+      checkDateWithinRange(dateBean) {
         return this.selectableRange.length > 0
-          ? timeWithinRange(date, this.selectableRange, this.format || 'HH:mm:ss')
+          ? timeWithinRange(dateBean, this.selectableRange, this.format || 'HH:mm:ss')
           : true;
       }
     },
@@ -518,7 +518,7 @@
     data() {
       return {
         popperClass: '',
-        date: new Date(),
+        dateBean: new Date(),
         value: '',
         defaultValue: null, // use getDefaultValue() for time computation
         defaultTime: null,
@@ -526,7 +526,7 @@
         selectionMode: 'day',
         shortcuts: '',
         visible: false,
-        currentView: 'date',
+        currentView: 'dateBean',
         disabledDate: '',
         cellClassName: '',
         selectableRange: [],
@@ -542,19 +542,19 @@
 
     computed: {
       year() {
-        return this.date.getFullYear();
+        return this.dateBean.getFullYear();
       },
 
       month() {
-        return this.date.getMonth();
+        return this.dateBean.getMonth();
       },
 
       week() {
-        return getWeekNumber(this.date);
+        return getWeekNumber(this.dateBean);
       },
 
       monthDate() {
-        return this.date.getDate();
+        return this.dateBean.getDate();
       },
 
       footerVisible() {

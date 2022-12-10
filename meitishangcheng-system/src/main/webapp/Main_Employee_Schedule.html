@@ -242,7 +242,14 @@
                 });
             },
             selectAll(){
-
+                axios({
+                    method:"post",
+                    url:"http://localhost:8080/meitishangcheng-system/scheduleSelectClockInServlet",
+                    data:this.User
+                }).then(resp=>{
+                    console.log(resp.data)
+                    this.resDate = resp.data
+                })
             },
             add(){
                 var beginTime = this.form.time
@@ -258,14 +265,9 @@
                         url:"http://localhost:8080/meitishangcheng-system/scheduleClockInServlet",
                         data:this.User
                     }).then(resp=>{
-                        if (resp.data === 'success'){
                             this.Success();
                             this.selectAll();
-                            this.resDate = [{date:"2022-12-05",content:"√"}]
-                        }else {
-                            this.Error();
-                            this.selectAll();
-                        }
+                            this.resDate = resp.data
                     })
                 }
 

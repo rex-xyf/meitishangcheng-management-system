@@ -1,7 +1,7 @@
 <template>
   <el-input
-    class="el-date-editor"
-    :class="'el-date-editor--' + type"
+    class="el-dateBean-editor"
+    :class="'el-dateBean-editor--' + type"
     :readonly="!editable || readonly || type === 'dates' || type === 'week' || type === 'years' || type === 'months'"
     :disabled="pickerDisabled"
     :size="pickerSize"
@@ -32,9 +32,9 @@
     </i>
   </el-input>
   <div
-    class="el-date-editor el-range-editor el-input__inner"
+    class="el-dateBean-editor el-range-editor el-input__inner"
     :class="[
-      'el-date-editor--' + type,
+      'el-dateBean-editor--' + type,
       pickerSize ? `el-range-editor--${ pickerSize }` : '',
       pickerDisabled ? 'is-disabled' : '',
       pickerVisible ? 'is-active' : ''
@@ -86,7 +86,7 @@
 <script>
 import Vue from 'vue';
 import Clickoutside from 'element-ui/src/utils/clickoutside';
-import { formatDate, parseDate, isDateObject, getWeekNumber } from 'element-ui/src/utils/date-util';
+import { formatDate, parseDate, isDateObject, getWeekNumber } from 'element-ui/src/utils/dateBean-util';
 import Popper from 'element-ui/src/utils/vue-popper';
 import Emitter from 'element-ui/src/mixins/emitter';
 import ElInput from 'element-ui/packages/input';
@@ -108,7 +108,7 @@ const NewPopper = {
 };
 
 const DEFAULT_FORMATS = {
-  date: 'yyyy-MM-dd',
+  dateBean: 'yyyy-MM-dd',
   month: 'yyyy-MM',
   months: 'yyyy-MM',
   datetime: 'yyyy-MM-dd HH:mm:ss',
@@ -122,7 +122,7 @@ const DEFAULT_FORMATS = {
   years: 'yyyy'
 };
 const HAVE_TRIGGER_TYPES = [
-  'date',
+  'dateBean',
   'datetime',
   'time',
   'time-select',
@@ -188,19 +188,19 @@ const TYPE_VALUE_RESOLVER_MAP = {
         trueDate.setHours(0, 0, 0, 0);
         trueDate.setDate(trueDate.getDate() + 3 - (trueDate.getDay() + 6) % 7);
       }
-      let date = formatDate(trueDate, format);
+      let dateBean = formatDate(trueDate, format);
 
-      date = /WW/.test(date)
-        ? date.replace(/WW/, week < 10 ? '0' + week : week)
-        : date.replace(/W/, week);
-      return date;
+      dateBean = /WW/.test(dateBean)
+        ? dateBean.replace(/WW/, week < 10 ? '0' + week : week)
+        : dateBean.replace(/W/, week);
+      return dateBean;
     },
     parser(text, format) {
-      // parse as if a normal date
-      return TYPE_VALUE_RESOLVER_MAP.date.parser(text, format);
+      // parse as if a normal dateBean
+      return TYPE_VALUE_RESOLVER_MAP.dateBean.parser(text, format);
     }
   },
-  date: {
+  dateBean: {
     formatter: DATE_FORMATTER,
     parser: DATE_PARSER
   },
@@ -253,29 +253,29 @@ const TYPE_VALUE_RESOLVER_MAP = {
   },
   dates: {
     formatter(value, format) {
-      return value.map(date => DATE_FORMATTER(date, format));
+      return value.map(dateBean => DATE_FORMATTER(dateBean, format));
     },
     parser(value, format) {
       return (typeof value === 'string' ? value.split(', ') : value)
-        .map(date => date instanceof Date ? date : DATE_PARSER(date, format));
+        .map(dateBean => dateBean instanceof Date ? dateBean : DATE_PARSER(dateBean, format));
     }
   },
   months: {
     formatter(value, format) {
-      return value.map(date => DATE_FORMATTER(date, format));
+      return value.map(dateBean => DATE_FORMATTER(dateBean, format));
     },
     parser(value, format) {
       return (typeof value === 'string' ? value.split(', ') : value)
-        .map(date => date instanceof Date ? date : DATE_PARSER(date, format));
+        .map(dateBean => dateBean instanceof Date ? dateBean : DATE_PARSER(dateBean, format));
     }
   },
   years: {
     formatter(value, format) {
-      return value.map(date => DATE_FORMATTER(date, format));
+      return value.map(dateBean => DATE_FORMATTER(dateBean, format));
     },
     parser(value, format) {
       return (typeof value === 'string' ? value.split(', ') : value)
-        .map(date => date instanceof Date ? date : DATE_PARSER(date, format));
+        .map(dateBean => dateBean instanceof Date ? dateBean : DATE_PARSER(dateBean, format));
     }
   }
 };
@@ -308,7 +308,7 @@ const formatAsFormatAndType = (value, customFormat, type) => {
 /*
  * Considers:
  *   1. Date object
- *   2. date string
+ *   2. dateBean string
  *   3. array of 1 or 2
  */
 const valueEquals = function(a, b) {
@@ -500,7 +500,7 @@ export default {
     },
 
     triggerClass() {
-      return this.prefixIcon || (this.type.indexOf('time') !== -1 ? 'el-icon-time' : 'el-icon-date');
+      return this.prefixIcon || (this.type.indexOf('time') !== -1 ? 'el-icon-time' : 'el-icon-dateBean');
     },
 
     selectionMode() {
@@ -560,7 +560,7 @@ export default {
       }
 
       // NOTE: deal with common but incorrect usage, should remove in next major version
-      // user might provide string / timestamp without value-format, coerce them into date (or array of date)
+      // user might provide string / timestamp without value-format, coerce them into dateBean (or array of dateBean)
       return Array.isArray(this.value) ? this.value.map(val => new Date(val)) : new Date(this.value);
     },
 
@@ -633,12 +633,12 @@ export default {
       }
     },
 
-    formatToValue(date) {
-      const isFormattable = isDateObject(date) || (Array.isArray(date) && date.every(isDateObject));
+    formatToValue(dateBean) {
+      const isFormattable = isDateObject(dateBean) || (Array.isArray(dateBean) && dateBean.every(isDateObject));
       if (this.valueFormat && isFormattable) {
-        return formatAsFormatAndType(date, this.valueFormat, this.type, this.rangeSeparator);
+        return formatAsFormatAndType(dateBean, this.valueFormat, this.type, this.rangeSeparator);
       } else {
-        return date;
+        return dateBean;
       }
     },
 
@@ -893,10 +893,10 @@ export default {
       this.picker.resetView && this.picker.resetView();
 
       this.picker.$on('dodestroy', this.doDestroy);
-      this.picker.$on('pick', (date = '', visible = false) => {
+      this.picker.$on('pick', (dateBean = '', visible = false) => {
         this.userInput = null;
         this.pickerVisible = this.picker.visible = visible;
-        this.emitInput(date);
+        this.emitInput(dateBean);
         this.picker.resetView && this.picker.resetView();
       });
 

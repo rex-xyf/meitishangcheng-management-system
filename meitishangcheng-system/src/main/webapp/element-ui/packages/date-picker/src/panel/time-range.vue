@@ -19,7 +19,7 @@
               @change="handleMinChange"
               :arrow-control="arrowControl"
               @select-range="setMinSelectionRange"
-              :date="minDate">
+              :dateBean="minDate">
             </time-spinner>
           </div>
         </div>
@@ -35,7 +35,7 @@
               @change="handleMaxChange"
               :arrow-control="arrowControl"
               @select-range="setMaxSelectionRange"
-              :date="maxDate">
+              :dateBean="maxDate">
             </time-spinner>
           </div>
         </div>
@@ -62,24 +62,24 @@
     modifyDate,
     clearMilliseconds,
     timeWithinRange
-  } from 'element-ui/src/utils/date-util';
+  } from 'element-ui/src/utils/dateBean-util';
   import Locale from 'element-ui/src/mixins/locale';
   import TimeSpinner from '../basic/time-spinner';
 
   const MIN_TIME = parseDate('00:00:00', 'HH:mm:ss');
   const MAX_TIME = parseDate('23:59:59', 'HH:mm:ss');
 
-  const minTimeOfDay = function(date) {
-    return modifyDate(MIN_TIME, date.getFullYear(), date.getMonth(), date.getDate());
+  const minTimeOfDay = function(dateBean) {
+    return modifyDate(MIN_TIME, dateBean.getFullYear(), dateBean.getMonth(), dateBean.getDate());
   };
   
-  const maxTimeOfDay = function(date) {
-    return modifyDate(MAX_TIME, date.getFullYear(), date.getMonth(), date.getDate());
+  const maxTimeOfDay = function(dateBean) {
+    return modifyDate(MAX_TIME, dateBean.getFullYear(), dateBean.getMonth(), dateBean.getDate());
   };
 
   // increase time by amount of milliseconds, but within the range of day
-  const advanceTime = function(date, amount) {
-    return new Date(Math.min(date.getTime() + amount, maxTimeOfDay(date).getTime()));
+  const advanceTime = function(dateBean, amount) {
+    return new Date(Math.min(dateBean.getTime() + amount, maxTimeOfDay(dateBean).getTime()));
   };
 
   export default {
@@ -161,13 +161,13 @@
         this.$emit('pick', this.oldValue);
       },
 
-      handleMinChange(date) {
-        this.minDate = clearMilliseconds(date);
+      handleMinChange(dateBean) {
+        this.minDate = clearMilliseconds(dateBean);
         this.handleChange();
       },
 
-      handleMaxChange(date) {
-        this.maxDate = clearMilliseconds(date);
+      handleMaxChange(dateBean) {
+        this.maxDate = clearMilliseconds(dateBean);
         this.handleChange();
       },
 
@@ -217,8 +217,8 @@
         }
       },
 
-      isValidValue(date) {
-        return Array.isArray(date) &&
+      isValidValue(dateBean) {
+        return Array.isArray(dateBean) &&
           timeWithinRange(this.minDate, this.$refs.minSpinner.selectableRange) &&
           timeWithinRange(this.maxDate, this.$refs.maxSpinner.selectableRange);
       },

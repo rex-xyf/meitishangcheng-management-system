@@ -2,7 +2,7 @@
   <transition name="el-zoom-in-top" @after-leave="$emit('dodestroy')">
     <div
       v-show="visible"
-      class="el-picker-panel el-date-range-picker el-popper"
+      class="el-picker-panel el-dateBean-range-picker el-popper"
       :class="[{
         'has-sidebar': $slots.sidebar || shortcuts,
         'has-time': showTime
@@ -18,23 +18,23 @@
             @click="handleShortcutClick(shortcut)">{{shortcut.text}}</button>
         </div>
         <div class="el-picker-panel__body">
-          <div class="el-date-range-picker__time-header" v-if="showTime">
-            <span class="el-date-range-picker__editors-wrap">
-              <span class="el-date-range-picker__time-picker-wrap">
+          <div class="el-dateBean-range-picker__time-header" v-if="showTime">
+            <span class="el-dateBean-range-picker__editors-wrap">
+              <span class="el-dateBean-range-picker__time-picker-wrap">
                 <el-input
                   size="small"
                   :disabled="rangeState.selecting"
                   ref="minInput"
                   :placeholder="t('el.datepicker.startDate')"
-                  class="el-date-range-picker__editor"
+                  class="el-dateBean-range-picker__editor"
                   :value="minVisibleDate"
                   @input="val => handleDateInput(val, 'min')"
                   @change="val => handleDateChange(val, 'min')" />
               </span>
-              <span class="el-date-range-picker__time-picker-wrap" v-clickoutside="handleMinTimeClose">
+              <span class="el-dateBean-range-picker__time-picker-wrap" v-clickoutside="handleMinTimeClose">
                 <el-input
                   size="small"
-                  class="el-date-range-picker__editor"
+                  class="el-dateBean-range-picker__editor"
                   :disabled="rangeState.selecting"
                   :placeholder="t('el.datepicker.startTime')"
                   :value="minVisibleTime"
@@ -51,11 +51,11 @@
               </span>
             </span>
             <span class="el-icon-arrow-right"></span>
-            <span class="el-date-range-picker__editors-wrap is-right">
-              <span class="el-date-range-picker__time-picker-wrap">
+            <span class="el-dateBean-range-picker__editors-wrap is-right">
+              <span class="el-dateBean-range-picker__time-picker-wrap">
                 <el-input
                   size="small"
-                  class="el-date-range-picker__editor"
+                  class="el-dateBean-range-picker__editor"
                   :disabled="rangeState.selecting"
                   :placeholder="t('el.datepicker.endDate')"
                   :value="maxVisibleDate"
@@ -63,10 +63,10 @@
                   @input="val => handleDateInput(val, 'max')"
                   @change="val => handleDateChange(val, 'max')" />
               </span>
-              <span class="el-date-range-picker__time-picker-wrap" v-clickoutside="handleMaxTimeClose">
+              <span class="el-dateBean-range-picker__time-picker-wrap" v-clickoutside="handleMaxTimeClose">
                 <el-input
                   size="small"
-                  class="el-date-range-picker__editor"
+                  class="el-dateBean-range-picker__editor"
                   :disabled="rangeState.selecting"
                   :placeholder="t('el.datepicker.endTime')"
                   :value="maxVisibleTime"
@@ -84,8 +84,8 @@
               </span>
             </span>
           </div>
-          <div class="el-picker-panel__content el-date-range-picker__content is-left">
-            <div class="el-date-range-picker__header">
+          <div class="el-picker-panel__content el-dateBean-range-picker__content is-left">
+            <div class="el-dateBean-range-picker__header">
               <button
                 type="button"
                 @click="leftPrevYear"
@@ -110,22 +110,22 @@
                 class="el-picker-panel__icon-btn el-icon-arrow-right"></button>
               <div>{{ leftLabel }}</div>
             </div>
-            <date-table
+            <dateBean-table
               selection-mode="range"
-              :date="leftDate"
+              :dateBean="leftDate"
               :default-value="defaultValue"
-              :min-date="minDate"
-              :max-date="maxDate"
+              :min-dateBean="minDate"
+              :max-dateBean="maxDate"
               :range-state="rangeState"
-              :disabled-date="disabledDate"
+              :disabled-dateBean="disabledDate"
               :cell-class-name="cellClassName"
               @changerange="handleChangeRange"
               :first-day-of-week="firstDayOfWeek"
               @pick="handleRangePick">
-            </date-table>
+            </dateBean-table>
           </div>
-          <div class="el-picker-panel__content el-date-range-picker__content is-right">
-            <div class="el-date-range-picker__header">
+          <div class="el-picker-panel__content el-dateBean-range-picker__content is-right">
+            <div class="el-dateBean-range-picker__header">
               <button
                 type="button"
                 @click="rightPrevYear"
@@ -150,19 +150,19 @@
                 class="el-picker-panel__icon-btn el-icon-arrow-right"></button>
               <div>{{ rightLabel }}</div>
             </div>
-            <date-table
+            <dateBean-table
               selection-mode="range"
-              :date="rightDate"
+              :dateBean="rightDate"
               :default-value="defaultValue"
-              :min-date="minDate"
-              :max-date="maxDate"
+              :min-dateBean="minDate"
+              :max-dateBean="maxDate"
               :range-state="rangeState"
-              :disabled-date="disabledDate"
+              :disabled-dateBean="disabledDate"
               :cell-class-name="cellClassName"
               @changerange="handleChangeRange"
               :first-day-of-week="firstDayOfWeek"
               @pick="handleRangePick">
-            </date-table>
+            </dateBean-table>
           </div>
         </div>
       </div>
@@ -202,11 +202,11 @@
     nextDate,
     extractDateFormat,
     extractTimeFormat
-  } from 'element-ui/src/utils/date-util';
+  } from 'element-ui/src/utils/dateBean-util';
   import Clickoutside from 'element-ui/src/utils/clickoutside';
   import Locale from 'element-ui/src/mixins/locale';
   import TimePicker from './time';
-  import DateTable from '../basic/date-table';
+  import DateTable from '../basic/dateBean-table';
   import ElInput from 'element-ui/packages/input';
   import ElButton from 'element-ui/packages/button';
 
@@ -367,7 +367,7 @@
           }
         });
         if (val && this.$refs.minTimePicker) {
-          this.$refs.minTimePicker.date = val;
+          this.$refs.minTimePicker.dateBean = val;
           this.$refs.minTimePicker.value = val;
         }
       },
@@ -376,7 +376,7 @@
         this.dateUserInput.max = null;
         this.timeUserInput.max = null;
         if (val && this.$refs.maxTimePicker) {
-          this.$refs.maxTimePicker.date = val;
+          this.$refs.maxTimePicker.dateBean = val;
           this.$refs.maxTimePicker.value = val;
         }
       },
@@ -384,7 +384,7 @@
       minTimePickerVisible(val) {
         if (val) {
           this.$nextTick(() => {
-            this.$refs.minTimePicker.date = this.minDate;
+            this.$refs.minTimePicker.dateBean = this.minDate;
             this.$refs.minTimePicker.value = this.minDate;
             this.$refs.minTimePicker.adjustSpinners();
           });
@@ -394,7 +394,7 @@
       maxTimePickerVisible(val) {
         if (val) {
           this.$nextTick(() => {
-            this.$refs.maxTimePicker.date = this.maxDate;
+            this.$refs.maxTimePicker.dateBean = this.maxDate;
             this.$refs.maxTimePicker.value = this.maxDate;
             this.$refs.maxTimePicker.adjustSpinners();
           });
@@ -668,7 +668,7 @@
       resetView() {
         // NOTE: this is a hack to reset {min, max}Date on picker open.
         // TODO: correct way of doing so is to refactor {min, max}Date to be dependent on value and internal selection state
-        //       an alternative would be resetView whenever picker becomes visible, should also investigate date-panel's resetView
+        //       an alternative would be resetView whenever picker becomes visible, should also investigate dateBean-panel's resetView
         if (this.minDate && this.maxDate == null) this.rangeState.selecting = false;
         this.minDate = this.value && isDate(this.value[0]) ? new Date(this.value[0]) : null;
         this.maxDate = this.value && isDate(this.value[0]) ? new Date(this.value[1]) : null;

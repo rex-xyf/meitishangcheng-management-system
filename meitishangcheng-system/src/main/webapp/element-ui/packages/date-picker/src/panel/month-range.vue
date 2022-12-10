@@ -2,7 +2,7 @@
   <transition name="el-zoom-in-top" @after-leave="$emit('dodestroy')">
     <div
       v-show="visible"
-      class="el-picker-panel el-date-range-picker el-popper"
+      class="el-picker-panel el-dateBean-range-picker el-popper"
       :class="[{
         'has-sidebar': $slots.sidebar || shortcuts
       }, popperClass]">
@@ -17,8 +17,8 @@
             @click="handleShortcutClick(shortcut)">{{shortcut.text}}</button>
         </div>
         <div class="el-picker-panel__body">
-          <div class="el-picker-panel__content el-date-range-picker__content is-left">
-            <div class="el-date-range-picker__header">
+          <div class="el-picker-panel__content el-dateBean-range-picker__content is-left">
+            <div class="el-dateBean-range-picker__header">
               <button
                 type="button"
                 @click="leftPrevYear"
@@ -34,18 +34,18 @@
             </div>
             <month-table
               selection-mode="range"
-              :date="leftDate"
+              :dateBean="leftDate"
               :default-value="defaultValue"
-              :min-date="minDate"
-              :max-date="maxDate"
+              :min-dateBean="minDate"
+              :max-dateBean="maxDate"
               :range-state="rangeState"
-              :disabled-date="disabledDate"
+              :disabled-dateBean="disabledDate"
               @changerange="handleChangeRange"
               @pick="handleRangePick">
             </month-table>
           </div>
-          <div class="el-picker-panel__content el-date-range-picker__content is-right">
-            <div class="el-date-range-picker__header">
+          <div class="el-picker-panel__content el-dateBean-range-picker__content is-right">
+            <div class="el-dateBean-range-picker__header">
               <button
                 type="button"
                 v-if="unlinkPanels"
@@ -61,12 +61,12 @@
             </div>
             <month-table
               selection-mode="range"
-              :date="rightDate"
+              :dateBean="rightDate"
               :default-value="defaultValue"
-              :min-date="minDate"
-              :max-date="maxDate"
+              :min-dateBean="minDate"
+              :max-dateBean="maxDate"
               :range-state="rangeState"
-              :disabled-date="disabledDate"
+              :disabled-dateBean="disabledDate"
               @changerange="handleChangeRange"
               @pick="handleRangePick">
             </month-table>
@@ -84,7 +84,7 @@
     prevYear,
     nextYear,
     nextMonth
-  } from 'element-ui/src/utils/date-util';
+  } from 'element-ui/src/utils/dateBean-util';
   import Clickoutside from 'element-ui/src/utils/clickoutside';
   import Locale from 'element-ui/src/mixins/locale';
   import MonthTable from '../basic/month-table';
@@ -278,7 +278,7 @@
       resetView() {
         // NOTE: this is a hack to reset {min, max}Date on picker open.
         // TODO: correct way of doing so is to refactor {min, max}Date to be dependent on value and internal selection state
-        //       an alternative would be resetView whenever picker becomes visible, should also investigate date-panel's resetView
+        //       an alternative would be resetView whenever picker becomes visible, should also investigate dateBean-panel's resetView
         this.minDate = this.value && isDate(this.value[0]) ? new Date(this.value[0]) : null;
         this.maxDate = this.value && isDate(this.value[0]) ? new Date(this.value[1]) : null;
       }

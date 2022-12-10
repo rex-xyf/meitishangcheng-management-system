@@ -120,8 +120,8 @@
         }
       },
 
-      isValidValue(date) {
-        return this.items.filter(item => !item.disabled).map(item => item.value).indexOf(date) !== -1;
+      isValidValue(dateBean) {
+        return this.items.filter(item => !item.disabled).map(item => item.value).indexOf(dateBean) !== -1;
       },
 
       handleKeydown(event) {

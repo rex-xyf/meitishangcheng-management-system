@@ -25,7 +25,7 @@
   - Add translation of Malaysian (#22028 by @iorange0411)
   - Update translation of Swahili (#21904 by @Cholowao)
 - Utils
-  - update date-util.js (#22099 by @Due07)  
+  - update dateBean-util.js (#22099 by @Due07)  
 - DatePicker
   - add months And years type (#21918 by @akiko123456)
 
@@ -1076,7 +1076,7 @@
 
 - **Don't specify node version** (by @iamkun in #14546)
 - Corrección del directorio doc en `deloy-faas.sh` (by @ziyoung in #14553)
-- Arreglado el estilo de date en changelog para 2.6.0 (by @island205 in #14547)
+- Arreglado el estilo de dateBean en changelog para 2.6.0 (by @island205 in #14547)
 - Corregido error tipográfico en doc (by @wack6 in #14552)
 
 ### 2.6.0

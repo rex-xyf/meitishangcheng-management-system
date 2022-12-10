@@ -25,7 +25,7 @@
   - 新增 马来西亚语 翻译 (#22028 by @iorange0411)
   - 更新 斯瓦希里语 翻译 (#21904 by @Cholowao)
 - Utils
-  - 更新 date-util.js (#22099 by @Due07)
+  - 更新 dateBean-util.js (#22099 by @Due07)
 - DatePicker
   - 新增 months 和 years 类型 (#21918 by @akiko123456)
 

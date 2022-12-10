@@ -101,7 +101,7 @@
 </template>
 
 <script type="text/babel">
-  import { getRangeHours, getRangeMinutes, modifyTime } from 'element-ui/src/utils/date-util';
+  import { getRangeHours, getRangeMinutes, modifyTime } from 'element-ui/src/utils/dateBean-util';
   import ElScrollbar from 'element-ui/packages/scrollbar';
   import RepeatClick from 'element-ui/src/directives/repeat-click';
 
@@ -113,7 +113,7 @@
     },
 
     props: {
-      date: {},
+      dateBean: {},
       defaultValue: {}, // reserved for future use
       showSeconds: {
         type: Boolean,
@@ -128,13 +128,13 @@
 
     computed: {
       hours() {
-        return this.date.getHours();
+        return this.dateBean.getHours();
       },
       minutes() {
-        return this.date.getMinutes();
+        return this.dateBean.getMinutes();
       },
       seconds() {
-        return this.date.getSeconds();
+        return this.dateBean.getSeconds();
       },
       hoursList() {
         return getRangeHours(this.selectableRange);
@@ -192,9 +192,9 @@
 
       modifyDateField(type, value) {
         switch (type) {
-          case 'hours': this.$emit('change', modifyTime(this.date, value, this.minutes, this.seconds)); break;
-          case 'minutes': this.$emit('change', modifyTime(this.date, this.hours, value, this.seconds)); break;
-          case 'seconds': this.$emit('change', modifyTime(this.date, this.hours, this.minutes, value)); break;
+          case 'hours': this.$emit('change', modifyTime(this.dateBean, value, this.minutes, this.seconds)); break;
+          case 'minutes': this.$emit('change', modifyTime(this.dateBean, this.hours, value, this.seconds)); break;
+          case 'seconds': this.$emit('change', modifyTime(this.dateBean, this.hours, this.minutes, value)); break;
         }
       },
 
@@ -235,7 +235,7 @@
         this.modifyDateField(type, value);
       },
 
-      // NOTE: used by datetime / date-range panel
+      // NOTE: used by datetime / dateBean-range panel
       //       renamed from adjustScrollTop
       //       should try to refactory it
       adjustSpinners() {

@@ -14,7 +14,7 @@
 
 <script type="text/babel">
   import Locale from 'element-ui/src/mixins/locale';
-  import { isDate, range, getDayCountOfMonth, nextDate } from 'element-ui/src/utils/date-util';
+  import { isDate, range, getDayCountOfMonth, nextDate } from 'element-ui/src/utils/dateBean-util';
   import { hasClass } from 'element-ui/src/utils/dom';
   import { arrayFindIndex, coerceTruthyValueToArray, arrayFind } from 'element-ui/src/utils/util';
 
@@ -24,8 +24,8 @@
     return range(numOfDays).map(n => nextDate(firstDay, n));
   };
 
-  const clearDate = (date) => {
-    return new Date(date.getFullYear(), date.getMonth());
+  const clearDate = (dateBean) => {
+    return new Date(dateBean.getFullYear(), dateBean.getMonth());
   };
 
   const getMonthTimestamp = function(time) {
@@ -61,7 +61,7 @@
           return val === null || isDate(val) || (Array.isArray(val) && val.every(isDate));
         }
       },
-      date: {},
+      dateBean: {},
       rangeState: {
         default() {
           return {
@@ -102,38 +102,38 @@
     },
 
     methods: {
-      cellMatchesDate(cell, date) {
-        const value = new Date(date);
-        return this.date.getFullYear() === value.getFullYear() && Number(cell.text) === value.getMonth();
+      cellMatchesDate(cell, dateBean) {
+        const value = new Date(dateBean);
+        return this.dateBean.getFullYear() === value.getFullYear() && Number(cell.text) === value.getMonth();
       },
       getCellStyle(cell) {
         const style = {};
-        const year = this.date.getFullYear();
+        const year = this.dateBean.getFullYear();
         const today = new Date();
         const month = cell.text;
         const defaultValue = this.defaultValue ? Array.isArray(this.defaultValue) ? this.defaultValue : [this.defaultValue] : [];
         style.disabled = typeof this.disabledDate === 'function'
           ? datesInMonth(year, month).every(this.disabledDate)
           : false;
-        style.current = arrayFindIndex(coerceTruthyValueToArray(this.value), date => date.getFullYear() === year && date.getMonth() === month) >= 0;
+        style.current = arrayFindIndex(coerceTruthyValueToArray(this.value), dateBean => dateBean.getFullYear() === year && dateBean.getMonth() === month) >= 0;
         style.today = today.getFullYear() === year && today.getMonth() === month;
-        style.default = defaultValue.some(date => this.cellMatchesDate(cell, date));
+        style.default = defaultValue.some(dateBean => this.cellMatchesDate(cell, dateBean));
 
         if (cell.inRange) {
           style['in-range'] = true;
 
           if (cell.start) {
-            style['start-date'] = true;
+            style['start-dateBean'] = true;
           }
 
           if (cell.end) {
-            style['end-date'] = true;
+            style['end-dateBean'] = true;
           }
         }
         return style;
       },
       getMonthOfCell(month) {
-        const year = this.date.getFullYear();
+        const year = this.dateBean.getFullYear();
         return new Date(year, month, 1);
       },
       markRange(minDate, maxDate) {
@@ -147,7 +147,7 @@
 
             const cell = row[j];
             const index = i * 4 + j;
-            const time = new Date(this.date.getFullYear(), index).getTime();
+            const time = new Date(this.dateBean.getFullYear(), index).getTime();
 
             cell.inRange = minDate && time >= minDate && time <= maxDate;
             cell.start = minDate && time === minDate;
@@ -169,7 +169,7 @@
 
         const row = target.parentNode.rowIndex;
         const column = target.cellIndex;
-        // can not select disabled date
+        // can not select disabled dateBean
         if (this.rows[row][column].disabled) return;
 
         // only update rangeState when mouse moves to a new cell
@@ -215,9 +215,9 @@
           }
         } else if (this.selectionMode === 'months') {
           const value = this.value || [];
-          const year = this.date.getFullYear();
-          const newValue = arrayFindIndex(value, date => date.getFullYear() === year && date.getMonth() === month) >= 0
-            ? removeFromArray(value, date => date.getTime() === newDate.getTime())
+          const year = this.dateBean.getFullYear();
+          const newValue = arrayFindIndex(value, dateBean => dateBean.getFullYear() === year && dateBean.getMonth() === month) >= 0
+            ? removeFromArray(value, dateBean => dateBean.getTime() === newDate.getTime())
             : [...value, newDate];
           this.$emit('pick', newValue);
         } else {
@@ -245,7 +245,7 @@
             cell.type = 'normal';
 
             const index = i * 4 + j;
-            const time = new Date(this.date.getFullYear(), index).getTime();
+            const time = new Date(this.dateBean.getFullYear(), index).getTime();
             cell.inRange = time >= getMonthTimestamp(this.minDate) && time <= getMonthTimestamp(this.maxDate);
             cell.start = this.minDate && time === getMonthTimestamp(this.minDate);
             cell.end = this.maxDate && time === getMonthTimestamp(this.maxDate);
@@ -257,7 +257,7 @@
             cell.text = index;
             let cellDate = new Date(time);
             cell.disabled = typeof disabledDate === 'function' && disabledDate(cellDate);
-            cell.selected = arrayFind(selectedDate, date => date.getTime() === cellDate.getTime());
+            cell.selected = arrayFind(selectedDate, dateBean => dateBean.getTime() === cellDate.getTime());
 
             this.$set(row, j, cell);
           }

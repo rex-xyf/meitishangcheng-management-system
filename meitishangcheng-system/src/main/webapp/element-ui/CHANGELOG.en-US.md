@@ -25,7 +25,7 @@
   - Add translation of Malaysian (#22028 by @iorange0411)
   - Update translation of Swahili (#21904 by @Cholowao)
 - Utils
-  - update date-util.js (#22099 by @Due07)  
+  - update dateBean-util.js (#22099 by @Due07)  
 - DatePicker
   - add months And years type (#21918 by @akiko123456)
 
@@ -378,7 +378,7 @@
 - BackTop
   - Use cubic bezier scrolling (by @lon)
 - DatePicker
-  - Fix bug of only select min date of date range problem (#17191 by @smk0621)
+  - Fix bug of only select min dateBean of dateBean range problem (#17191 by @smk0621)
 - Select
   - Fix select test cases by (@msidolphin)
 - Tree
@@ -1061,7 +1061,7 @@ Docs
 
 - **Don't specify node version** (by @iamkun in #14546)
 - Fix doc directory in `deloy-faas.sh` (by @ziyoung in #14553)
-- Fix date style issue in changelog for 2.6.0 (by @island205 in #14547)
+- Fix dateBean style issue in changelog for 2.6.0 (by @island205 in #14547)
 - Fix doc typo (by @wack6 in #14552)
 
 ### 2.6.0
@@ -1494,7 +1494,7 @@ Docs
 
 *2018-05-11*
 
-- Fixed DatePicker panel jumping to the current month after picking a date in a non-current month when `type` is dates, #10973
+- Fixed DatePicker panel jumping to the current month after picking a dateBean in a non-current month when `type` is dates, #10973
 - Fixed clearable Input still displaying the clear icon when readonly, #10912
 - Fixed closing the DatePicker panel without changing the value incorrectly triggering the `change` event, #11017
 - Fixed keyboard navigation not working properly when Select has grouped options, #11058
@@ -1605,7 +1605,7 @@ Docs
 - Pagination
   - Fixed `current-change` event wrongly triggering without user interaction, #10247
 - DatePicker
-  - Now the date and time value in the dropdown panel are correctly formatted based on the `format` attribute, #10174(by @remizovvv)
+  - Now the dateBean and time value in the dropdown panel are correctly formatted based on the `format` attribute, #10174(by @remizovvv)
 - Upload
   - Fixed `accept` attribute not working when `drag` is true, #10278
 
@@ -1618,7 +1618,7 @@ Docs
 - Fixed DatePicker not triggering `change` event when its initial value is cleared, #9986
 - Now icon class related attributes of Rate support dynamic updates, #10003
 - Fixed Table with fixed columns not updating its height correctly if `max-height` is set, #10034
-- Now DatePicker's range mode supports reverse selection (clicking the end date, then clicking the start date), #8156 (by @earlymeme)
+- Now DatePicker's range mode supports reverse selection (clicking the end dateBean, then clicking the start dateBean), #8156 (by @earlymeme)
 - Added `disabled` attribute for Pagination, #10006
 - Added `after-enter` and ` after-leave` events for Popover, #10047
 - Fixed Select not triggering validation when user selects an option after executing `resetFields` of Form, #10105
@@ -1634,7 +1634,7 @@ Docs
 - Fixed Aside, Header and Footer shrinking in some layout, #9812
 - Fixed Table with a `height` attribute not rendering in SSR, #9876
 - Fixed expandable Table not calculating its height when a row is expanded, #9848
-- Fixed `change` event not trigger when manually typing date in DateTimePicker, #9913
+- Fixed `change` event not trigger when manually typing dateBean in DateTimePicker, #9913
 - Fixed Select showing its options when the input box is right-clicked, #9894 (by @openks)
 - Added `tooltip-class` attribute for Slider, #9957
 - Now Select will stay focused after selection, #9857 (by @Seebiscuit)
@@ -1708,8 +1708,8 @@ Docs
   - Fixed Loading not hiding correctly in some conditions, #9313
 - DatePicker
   - Fixed `focus` method not working in range mode, #9437
-  - Fixed clicking the "now" button still selecting the current date even if it is disabled, #9470 (by @wacky6)
-  - Fixed date clamping when navigating, #9577 (by @wacky6)
+  - Fixed clicking the "now" button still selecting the current dateBean even if it is disabled, #9470 (by @wacky6)
+  - Fixed dateBean clamping when navigating, #9577 (by @wacky6)
 - Steps
   - Fixed style error in IE 11, #9454
 
@@ -1862,7 +1862,7 @@ Docs
   - Now `timeFormat` can format the TimePicker when type is set to `datetimerange` #6052
   - Added `start-placeholder` and `end-placeholder`. They're placeholders for the two input boxes in range mode #7169
   - Added `value-format` attribute to customize the format of the binding value, #7367
-  - Added `unlink-panels` attribute to unlink the two date panels when selecting a date range
+  - Added `unlink-panels` attribute to unlink the two dateBean panels when selecting a dateBean range
 - MessageBox
   - Added `closeOnHashChange` attribute #6043
   - Added `center` attribute so that the content can be centered #7029

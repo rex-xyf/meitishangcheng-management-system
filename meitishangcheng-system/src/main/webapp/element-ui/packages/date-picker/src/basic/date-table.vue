@@ -2,7 +2,7 @@
   <table
     cellspacing="0"
     cellpadding="0"
-    class="el-date-table"
+    class="el-dateBean-table"
     @click="handleClick"
     @mousemove="handleMouseMove"
     :class="{ 'is-week-mode': selectionMode === 'week' }">
@@ -12,7 +12,7 @@
       <th v-for="(week, key) in WEEKS" :key="key">{{ t('el.datepicker.weeks.' + week) }}</th>
     </tr>
     <tr
-      class="el-date-table__row"
+      class="el-dateBean-table__row"
       v-for="(row, key) in rows"
       :class="{ current: isWeekActive(row[1]) }"
       :key="key">
@@ -32,7 +32,7 @@
 </template>
 
 <script>
-  import { getFirstDayOfMonth, getDayCountOfMonth, getWeekNumber, getStartDateOfMonth, prevDate, nextDate, isDate, clearTime as _clearTime} from 'element-ui/src/utils/date-util';
+  import { getFirstDayOfMonth, getDayCountOfMonth, getWeekNumber, getStartDateOfMonth, prevDate, nextDate, isDate, clearTime as _clearTime} from 'element-ui/src/utils/dateBean-util';
   import Locale from 'element-ui/src/mixins/locale';
   import { arrayFindIndex, arrayFind, coerceTruthyValueToArray } from 'element-ui/src/utils/util';
 
@@ -74,7 +74,7 @@
         }
       },
 
-      date: {},
+      dateBean: {},
 
       selectionMode: {
         default: 'day'
@@ -116,11 +116,11 @@
       },
 
       year() {
-        return this.date.getFullYear();
+        return this.dateBean.getFullYear();
       },
 
       month() {
-        return this.date.getMonth();
+        return this.dateBean.getMonth();
       },
 
       startDate() {
@@ -129,10 +129,10 @@
 
       rows() {
         // TODO: refactory rows / getCellClasses
-        const date = new Date(this.year, this.month, 1);
-        let day = getFirstDayOfMonth(date); // day of first day
-        const dateCountOfMonth = getDayCountOfMonth(date.getFullYear(), date.getMonth());
-        const dateCountOfLastMonth = getDayCountOfMonth(date.getFullYear(), (date.getMonth() === 0 ? 11 : date.getMonth() - 1));
+        const dateBean = new Date(this.year, this.month, 1);
+        let day = getFirstDayOfMonth(dateBean); // day of first day
+        const dateCountOfMonth = getDayCountOfMonth(dateBean.getFullYear(), dateBean.getMonth());
+        const dateCountOfLastMonth = getDayCountOfMonth(dateBean.getFullYear(), (dateBean.getMonth() === 0 ? 11 : dateBean.getMonth() - 1));
 
         day = (day === 0 ? 7 : day);
 
@@ -194,7 +194,7 @@
 
             let cellDate = new Date(time);
             cell.disabled = typeof disabledDate === 'function' && disabledDate(cellDate);
-            cell.selected = arrayFind(selectedDate, date => date.getTime() === cellDate.getTime());
+            cell.selected = arrayFind(selectedDate, dateBean => dateBean.getTime() === cellDate.getTime());
             cell.customClass = typeof cellClassName === 'function' && cellClassName(cellDate);
             this.$set(row, this.showWeekNumber ? j + 1 : j, cell);
           }
@@ -242,8 +242,8 @@
     },
 
     methods: {
-      cellMatchesDate(cell, date) {
-        const value = new Date(date);
+      cellMatchesDate(cell, dateBean) {
+        const value = new Date(dateBean);
         return this.year === value.getFullYear() &&
           this.month === value.getMonth() &&
           Number(cell.text) === value.getDate();
@@ -263,7 +263,7 @@
           classes.push(cell.type);
         }
 
-        if (cell.type === 'normal' && defaultValue.some(date => this.cellMatchesDate(cell, date))) {
+        if (cell.type === 'normal' && defaultValue.some(dateBean => this.cellMatchesDate(cell, dateBean))) {
           classes.push('default');
         }
 
@@ -275,11 +275,11 @@
           classes.push('in-range');
 
           if (cell.start) {
-            classes.push('start-date');
+            classes.push('start-dateBean');
           }
 
           if (cell.end) {
-            classes.push('end-date');
+            classes.push('end-dateBean');
           }
         }
 
@@ -367,7 +367,7 @@
         const row = target.parentNode.rowIndex - 1;
         const column = target.cellIndex;
 
-        // can not select disabled date
+        // can not select disabled dateBean
         if (this.rows[row][column].disabled) return;
 
         // only update rangeState when mouse moves to a new cell
@@ -426,12 +426,12 @@
             year: newDate.getFullYear(),
             week: weekNumber,
             value: value,
-            date: newDate
+            dateBean: newDate
           });
         } else if (this.selectionMode === 'dates') {
           const value = this.value || [];
           const newValue = cell.selected
-            ? removeFromArray(value, date => date.getTime() === newDate.getTime())
+            ? removeFromArray(value, dateBean => dateBean.getTime() === newDate.getTime())
             : [...value, newDate];
           this.$emit('pick', newValue);
         }

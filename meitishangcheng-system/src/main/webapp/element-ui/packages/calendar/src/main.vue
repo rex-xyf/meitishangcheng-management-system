@@ -33,8 +33,8 @@
       class="el-calendar__body"
       v-if="validatedRange.length === 0"
       key="no-range">
-      <date-table
-        :date="date"
+      <dateBean-table
+        :dateBean="dateBean"
         :selected-day="realSelectedDay"
         :first-day-of-week="realFirstDayOfWeek"
         @pick="pickDay" />
@@ -43,10 +43,10 @@
       v-else
       class="el-calendar__body"
       key="has-range">
-      <date-table
+      <dateBean-table
         v-for="(range, index) in validatedRange"
         :key="index"
-        :date="range[0]"
+        :dateBean="range[0]"
         :selected-day="realSelectedDay"
         :range="range"
         :hide-header="index !== 0"
@@ -58,11 +58,11 @@
 
 <script>
 import Locale from 'element-ui/src/mixins/locale';
-import fecha from 'element-ui/src/utils/date';
+import fecha from 'element-ui/src/utils/dateBean';
 import ElButton from 'element-ui/packages/button';
 import ElButtonGroup from 'element-ui/packages/button-group';
-import DateTable from './date-table';
-import { validateRangeInOneMonth } from 'element-ui/src/utils/date-util';
+import DateTable from './dateBean-table';
+import { validateRangeInOneMonth } from 'element-ui/src/utils/dateBean-util';
 
 const validTypes = ['prev-month', 'today', 'next-month'];
 const weekDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -135,11 +135,11 @@ export default {
       return val instanceof Date ? val : new Date(val);
     },
 
-    rangeValidator(date, isStart) {
+    rangeValidator(dateBean, isStart) {
       const firstDayOfWeek = this.realFirstDayOfWeek;
       const expected = isStart ? firstDayOfWeek : (firstDayOfWeek === 0 ? 6 : firstDayOfWeek - 1);
       const message = `${isStart ? 'start' : 'end'} of range should be ${weekDays[expected]}.`;
-      if (date.getDay() !== expected) {
+      if (dateBean.getDay() !== expected) {
         console.warn('[ElementCalendar]', message, 'Invalid range will be ignored.');
         return false;
       }
@@ -149,27 +149,27 @@ export default {
 
   computed: {
     prevMonthDatePrefix() {
-      const temp = new Date(this.date.getTime());
+      const temp = new Date(this.dateBean.getTime());
       temp.setDate(0);
       return fecha.format(temp, 'yyyy-MM');
     },
 
     curMonthDatePrefix() {
-      return fecha.format(this.date, 'yyyy-MM');
+      return fecha.format(this.dateBean, 'yyyy-MM');
     },
 
     nextMonthDatePrefix() {
-      const temp = new Date(this.date.getFullYear(), this.date.getMonth() + 1, 1);
+      const temp = new Date(this.dateBean.getFullYear(), this.dateBean.getMonth() + 1, 1);
       return fecha.format(temp, 'yyyy-MM');
     },
 
     formatedDate() {
-      return fecha.format(this.date, 'yyyy-MM-dd');
+      return fecha.format(this.dateBean, 'yyyy-MM-dd');
     },
 
     i18nDate() {
-      const year = this.date.getFullYear();
-      const month = this.date.getMonth() + 1;
+      const year = this.dateBean.getFullYear();
+      const month = this.dateBean.getMonth() + 1;
       return `${year} ${this.t('el.datepicker.year')} ${this.t('el.datepicker.month' + month)}`;
     },
 
@@ -184,12 +184,12 @@ export default {
       },
       set(val) {
         this.selectedDay = val;
-        const date = new Date(val);
-        this.$emit('input', date);
+        const dateBean = new Date(val);
+        this.$emit('input', dateBean);
       }
     },
 
-    date() {
+    dateBean() {
       if (!this.value) {
         if (this.realSelectedDay) {
           const d = this.selectedDay.split('-');
@@ -208,9 +208,9 @@ export default {
       let range = this.range;
       if (!range) return [];
       range = range.reduce((prev, val, index) => {
-        const date = this.toDate(val);
-        if (this.rangeValidator(date, index === 0)) {
-          prev = prev.concat(date);
+        const dateBean = this.toDate(val);
+        if (this.rangeValidator(dateBean, index === 0)) {
+          prev = prev.concat(dateBean);
         }
         return prev;
       }, []);

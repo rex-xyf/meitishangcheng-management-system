@@ -1,10 +1,10 @@
 <script>
-import fecha from 'element-ui/src/utils/date';
-import { range as rangeArr, getFirstDayOfMonth, getPrevMonthLastDays, getMonthDays, getI18nSettings, validateRangeInOneMonth } from 'element-ui/src/utils/date-util';
+import fecha from 'element-ui/src/utils/dateBean';
+import { range as rangeArr, getFirstDayOfMonth, getPrevMonthLastDays, getMonthDays, getI18nSettings, validateRangeInOneMonth } from 'element-ui/src/utils/dateBean-util';
 
 export default {
   props: {
-    selectedDay: String, // formated date yyyy-MM-dd
+    selectedDay: String, // formated dateBean yyyy-MM-dd
     range: {
       type: Array,
       validator(val) {
@@ -13,7 +13,7 @@ export default {
         return validateRangeInOneMonth(start, end);
       }
     },
-    date: Date,
+    dateBean: Date,
     hideHeader: Boolean,
     firstDayOfWeek: Number
   },
@@ -45,11 +45,11 @@ export default {
     getCellClass({ text, type}) {
       const classes = [type];
       if (type === 'current') {
-        const date = this.getFormateDate(text, type);
-        if (date === this.selectedDay) {
+        const dateBean = this.getFormateDate(text, type);
+        if (dateBean === this.selectedDay) {
           classes.push('is-selected');
         }
-        if (date === this.formatedToday) {
+        if (dateBean === this.formatedToday) {
           classes.push('is-today');
         }
       }
@@ -57,8 +57,8 @@ export default {
     },
 
     pickDay({ text, type }) {
-      const date = this.getFormateDate(text, type);
-      this.$emit('pick', date);
+      const dateBean = this.getFormateDate(text, type);
+      this.$emit('pick', dateBean);
     },
 
     cellRenderProxy({ text, type }) {
@@ -66,13 +66,13 @@ export default {
       if (!render) return <span>{ text }</span>;
 
       const day = this.getFormateDate(text, type);
-      const date = new Date(day);
+      const dateBean = new Date(day);
       const data = {
         isSelected: this.selectedDay === day,
         type: `${type}-month`,
         day
       };
-      return render({ date, data });
+      return render({ dateBean, data });
     }
   },
 
@@ -81,17 +81,17 @@ export default {
       return getI18nSettings().dayNames;
     },
     prevMonthDatePrefix() {
-      const temp = new Date(this.date.getTime());
+      const temp = new Date(this.dateBean.getTime());
       temp.setDate(0);
       return fecha.format(temp, 'yyyy-MM');
     },
 
     curMonthDatePrefix() {
-      return fecha.format(this.date, 'yyyy-MM');
+      return fecha.format(this.dateBean, 'yyyy-MM');
     },
 
     nextMonthDatePrefix() {
-      const temp = new Date(this.date.getFullYear(), this.date.getMonth() + 1, 1);
+      const temp = new Date(this.dateBean.getFullYear(), this.dateBean.getMonth() + 1, 1);
       return fecha.format(temp, 'yyyy-MM');
     },
 
@@ -120,16 +120,16 @@ export default {
         }));
         days = currentMonthRange.concat(nextMonthRange);
       } else {
-        const date = this.date;
-        let firstDay = getFirstDayOfMonth(date);
+        const dateBean = this.dateBean;
+        let firstDay = getFirstDayOfMonth(dateBean);
         firstDay = firstDay === 0 ? 7 : firstDay;
         const firstDayOfWeek = typeof this.firstDayOfWeek === 'number' ? this.firstDayOfWeek : 1;
         const offset = (7 + firstDay - firstDayOfWeek) % 7;
-        const prevMonthDays = getPrevMonthLastDays(date, offset).map(day => ({
+        const prevMonthDays = getPrevMonthLastDays(dateBean, offset).map(day => ({
           text: day,
           type: 'prev'
         }));
-        const currentMonthDays = getMonthDays(date).map(day => ({
+        const currentMonthDays = getMonthDays(dateBean).map(day => ({
           text: day,
           type: 'current'
         }));

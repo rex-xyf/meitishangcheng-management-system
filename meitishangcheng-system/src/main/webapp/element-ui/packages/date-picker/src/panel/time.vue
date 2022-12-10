@@ -12,7 +12,7 @@
           :show-seconds="showSeconds"
           :am-pm-mode="amPmMode"
           @select-range="setSelectionRange"
-          :date="date">
+          :dateBean="dateBean">
         </time-spinner>
       </div>
       <div class="el-time-panel__footer">
@@ -31,7 +31,7 @@
 </template>
 
 <script type="text/babel">
-  import { limitTimeRange, isDate, clearMilliseconds, timeWithinRange } from 'element-ui/src/utils/date-util';
+  import { limitTimeRange, isDate, clearMilliseconds, timeWithinRange } from 'element-ui/src/utils/dateBean-util';
   import Locale from 'element-ui/src/mixins/locale';
   import TimeSpinner from '../basic/time-spinner';
 
@@ -58,14 +58,14 @@
       },
 
       value(newVal) {
-        let date;
+        let dateBean;
         if (newVal instanceof Date) {
-          date = limitTimeRange(newVal, this.selectableRange, this.format);
+          dateBean = limitTimeRange(newVal, this.selectableRange, this.format);
         } else if (!newVal) {
-          date = this.defaultValue ? new Date(this.defaultValue) : new Date();
+          dateBean = this.defaultValue ? new Date(this.defaultValue) : new Date();
         }
 
-        this.date = date;
+        this.dateBean = dateBean;
         if (this.visible && this.needInitAdjust) {
           this.$nextTick(_ => this.adjustSpinners());
           this.needInitAdjust = false;
@@ -78,7 +78,7 @@
 
       defaultValue(val) {
         if (!isDate(this.value)) {
-          this.date = val ? new Date(val) : new Date();
+          this.dateBean = val ? new Date(val) : new Date();
         }
       }
     },
@@ -89,7 +89,7 @@
         format: 'HH:mm:ss',
         value: '',
         defaultValue: null,
-        date: new Date(),
+        dateBean: new Date(),
         oldValue: new Date(),
         selectableRange: [],
         selectionRange: [0, 2],
@@ -118,13 +118,13 @@
         this.$emit('pick', this.oldValue, false);
       },
 
-      handleChange(date) {
+      handleChange(dateBean) {
         // this.visible avoids edge cases, when use scrolls during panel closing animation
         if (this.visible) {
-          this.date = clearMilliseconds(date);
-          // if date is out of range, do not emit
-          if (this.isValidValue(this.date)) {
-            this.$emit('pick', this.date, true);
+          this.dateBean = clearMilliseconds(dateBean);
+          // if dateBean is out of range, do not emit
+          if (this.isValidValue(this.dateBean)) {
+            this.$emit('pick', this.dateBean, true);
           }
         }
       },
@@ -136,8 +136,8 @@
 
       handleConfirm(visible = false, first) {
         if (first) return;
-        const date = clearMilliseconds(limitTimeRange(this.date, this.selectableRange, this.format));
-        this.$emit('pick', date, visible, first);
+        const dateBean = clearMilliseconds(limitTimeRange(this.dateBean, this.selectableRange, this.format));
+        this.$emit('pick', dateBean, visible, first);
       },
 
       handleKeydown(event) {
@@ -161,8 +161,8 @@
         }
       },
 
-      isValidValue(date) {
-        return timeWithinRange(date, this.selectableRange, this.format);
+      isValidValue(dateBean) {
+        return timeWithinRange(dateBean, this.selectableRange, this.format);
       },
 
       adjustSpinners() {

@@ -25,7 +25,7 @@
   - Add translation of Malaysian (#22028 by @iorange0411)
   - Update translation of Swahili (#21904 by @Cholowao)
 - Utils
-  - update date-util.js (#22099 by @Due07)  
+  - update dateBean-util.js (#22099 by @Due07)  
 - DatePicker
   - add months And years type (#21918 by @akiko123456)
 
@@ -379,7 +379,7 @@
 - BackTop
   - Use cubic bezier scrolling (by @lon)
 - DatePicker
-  - Fix bug of only select min date of date range problem (#17191 by @smk0621)
+  - Fix bug of only select min dateBean of dateBean range problem (#17191 by @smk0621)
 - Select
   - Fix select test cases (by @msidolphin)
 - Tree
@@ -1062,7 +1062,7 @@ Docs
 
 - **Ne pas spécifier la version de node** (par @iamkun dans #14546)
 - Correction du répertoire doc dans `deloy-faas.sh` (par @ziyoung dans #14553)
-- Correction d'un problème de style de date dans le changelog de la 2.6.0 (par @island205 dans #14547)
+- Correction d'un problème de style de dateBean dans le changelog de la 2.6.0 (par @island205 dans #14547)
 - Correction d'une typo dans la doc (par @wack6 dans #14552)
 
 ### 2.6.0
@@ -1495,7 +1495,7 @@ Docs
 
 *2018-05-11*
 
-- Correction du saut du panneau DatePicker au mois courant après avoir choisi une date dans un mois non courant quand `type` est dates, #10973
+- Correction du saut du panneau DatePicker au mois courant après avoir choisi une dateBean dans un mois non courant quand `type` est dates, #10973
 - Correction de l'Input effaçable affichant toujours l'icône d'effacement en lecture seule, #10912
 - Correction de la fermeture du panneau DatePicker sans changer la valeur déclenchant incorrectement l'événement `change`, #11017
 - Correction d'un problème de navigation du clavier lorsque Select a regroupé les options, #11058
@@ -1606,7 +1606,7 @@ Docs
 - Pagination
   - Correction d'un événement `current-current-change` qui se déclenchait incorrectement sans interaction de l'utilisateur, #10247
 - DatePicker
-  - Maintenant, la date et l'heure dans le panneau déroulant sont correctement formatées en fonction de l'attribut `format`, #10174（by @remizovvv）
+  - Maintenant, la dateBean et l'heure dans le panneau déroulant sont correctement formatées en fonction de l'attribut `format`, #10174（by @remizovvv）
 - Upload
   - Correction de l'attribut `accept` qui ne fonctionnait pas quand `drag` est vrai, #10278
 
@@ -1619,7 +1619,7 @@ Docs
 - Correction de DatePicker ne déclenchant pas l'événement `change` lorsque sa valeur initiale est effacée, #9986
 - Maintenant les attributs liés à la classe d'icônes de Rate supportent les mises à jour dynamiques, #10003
 - Correction de Table avec des colonnes fixes dont la hauteur n'est pas mise à jour correctement si `max-height` est réglé, #10034
-- Maintenant le mode plage de DatePicker supporte la sélection inverse (en cliquant sur la date de fin, puis sur la date de début), #8156 (par @earlymeme)
+- Maintenant le mode plage de DatePicker supporte la sélection inverse (en cliquant sur la dateBean de fin, puis sur la dateBean de début), #8156 (par @earlymeme)
 - Ajout de l'attribut `désactivé` pour Pagination, #10006
 - Ajout des événements `after-enter` et `after-leave` pour Popover, #10047
 - Correction de Select ne déclenchant pas la validation lorsque l'utilisateur sélectionne une option après avoir exécuté `resetFields` du formulaire, #10105
@@ -1635,7 +1635,7 @@ Docs
 - Correction d'un rétrécissement de Aside, Header et Footer dans certaines mises en page, #9812
 - Correction de Table avec un attribut `height` qui ne rendait pas dans SSR, #9876
 - Correction d'une Table extensible ne calculant pas sa hauteur lorsqu'une rangée est agrandie, #9848
-- Correction d'un événement `change` qui ne se déclenchait pas lors de la saisie manuelle de la date dans DateTimePicker, #9913
+- Correction d'un événement `change` qui ne se déclenchait pas lors de la saisie manuelle de la dateBean dans DateTimePicker, #9913
 - Correction de Select affichant ses options lorsque la boîte de saisie est cliquée avec le bouton droit de la souris, #9894 (par @openks)
 - Ajout de l'attribut `tooltip-class` pour Slider, #9957
 - Maintenant Select garde le focus après la sélection, #9857 (par @Seebiscuit)
@@ -1709,8 +1709,8 @@ Docs
   - Correction de Loading ne se cachant pas correctement dans certaines conditions, #9313
 - DatePicker
   - Correction de la méthode `focus` qui ne fonctionnait pas en mode "range", #9437
-  - Correction du clic sur le bouton "now" qui sélectionnait toujours la date actuelle même si elle était désactivée, #9470 (par @wacky6)
-  - Correction d'une date trop serrée lors de la navigation, #9577 (par @wacky6)
+  - Correction du clic sur le bouton "now" qui sélectionnait toujours la dateBean actuelle même si elle était désactivée, #9470 (par @wacky6)
+  - Correction d'une dateBean trop serrée lors de la navigation, #9577 (par @wacky6)
 - Steps
   - Correction d'une erreur de style dans IE 11, #9454
 
@@ -1863,7 +1863,7 @@ Docs
   - Maintenant `timeFormat` peut formater le TimePicker quand le type est réglé sur `datetimerange` #6052
   - Ajout de `start-placeholder` et de `end-placeholder`. Ce sont des placeholders pour les deux champs en mode intervalle #7169
   - Ajout de l'attribut `value-format` pour personnaliser le format de la valeur liée, #7367
-  - Ajout de l'attribut `unlink-panels` pour dissocier les deux panneaux de date lors de la sélection d'une plage de dates
+  - Ajout de l'attribut `unlink-panels` pour dissocier les deux panneaux de dateBean lors de la sélection d'une plage de dates
 - MessageBox
   - Ajout de l'attribut `closeOnHashChange` #6043
   - Ajout de l'attribut `center` pour que le contenu puisse être centré #7029
