@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mapper.ScheduleMapper">
+    <resultMap id="text" type="pojo.Schedule"></resultMap>
+
+    <insert id="add">
+        insert into schedule values(#{id},#{name},#{username},#{attendance},#{leave},#{daysOff},#{state})
+    </insert>
+    <update id="renew">
+        update schedule set name =#{name},state = 1 where id = #{id}
+    </update>
+
+    <update id="updateState">
+        update schedule set state = #{state} where id = #{id}
+    </update>
+
+    <update id="update">
+        update schedule set daysOff = #{daysOff},state = 1 ,`leave` = #{leave} where id = #{id}
+    </update>
+
+    <update id="updateAttendance">
+        update schedule set attendance = #{attendance} where id = #{id}
+    </update>
+
+    <delete id="delete">
+        delete from schedule where id = #{id}
+    </delete>
+
+    <select id="selectByName" resultMap="text">
+        select * from schedule where username = #{username}
+    </select>
+
+    <select id="count" resultType="int">
+        select count(*) from schedule
+        <where>
+            <if test="key=='name'">
+                name like #{value}
+            </if>
+            <if test="key=='username'">
+                username like #{value}
+            </if>
+            and state not in(0,2)
+        </where>
+    </select>
+
+    <select id="selectAll" resultMap="text">
+        select * from schedule
+        <where>
+            <if test="key=='name'">
+                name like #{value}
+            </if>
+            <if test="key=='username'">
+                username like #{value}
+            </if>
+            and state not in(0,2)
+        </where>
+        limit #{begin},#{size}
+    </select>
+
+    <select id="selectById" resultMap="text">
+        select * from schedule where id = #{id}
+    </select>
+
+    <select id="selectRequest" resultMap="text">
+        select * from schedule where state > 10
+    </select>
+    <select id="selectRequestCount" resultType="int">
+        select count(*) from schedule where state >10
+    </select>
+
+    <select id="selectAttendance" resultType="boolean">
+        select attendance from schedule
+    </select>
+    <select id="selectLeave" resultType="boolean">
+        select `leave` from schedule
+    </select>
+
+
+</mapper>

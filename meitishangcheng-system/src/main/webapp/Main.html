@@ -635,7 +635,7 @@
                         var _this = this;
                         axios({
                             method:"post",
-                            url:"http://localhost:8080/meitishangcheng-system/deleteServlet",
+                            url:"http://localhost:8080/meitishangcheng-system/refuseServlet",
                             data: row.id
                         }).then(function (resp){
                             if (resp.data === "success"){
